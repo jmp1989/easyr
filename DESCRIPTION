@@ -1,0 +1,24 @@
+Package: easyr
+Type: Package
+Title: Helpful wrappers for common EDA, Data Manipulation, & Modeling
+Version: 0.1.0
+Author: Joe Pereira joepereira89@gmail.com
+Maintainer: The package maintainer <joepereira89@gmail.com>
+Description: 
+    This package is intended to capture tasks related to EDA, Data Manipulation, Plots, and Modeling. Often, the same tasks are performed across projects.  Easyr is intended to help reduce the amount of time typing this functions and processes, so more time can be spent on the higher value work.  Future iterations of this package will improve the functions and documentation, all while adding new ones.
+Depends: R (>= 3.1.0),
+    tidyverse (>= 1.2.1),
+    h2o (>= 3.20.0.8),
+    devtools (>= 1.13.5),
+    data.table (>= 1.11.8),
+    DataExplorer (>= 0.6.0),
+    jsonlite (>= 1.5),
+    xgboost (>= 0.71.2),
+    caret (>= 6.0),
+    classInt (>= 0.2),
+    ggpubr (>= 0.1.7),
+    RJDBC (>= 0.2)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.1.0.9000
