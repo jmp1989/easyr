@@ -1,5 +1,5 @@
 
-#' Title Factorize columns in data
+#'  Factorize columns in data
 #'
 #' Convert fields in a dataset that are character or contain <= <<factor_le_unique_cnt>> unique values (including NA)
 #' If you wish to factor certain fields no matter what and ignore others, use factor_le_unique_cnt = 0.  Note that character fields will always factorize no matter what
