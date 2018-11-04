@@ -18,7 +18,10 @@
 #' @param seed  Default is 2018
 #' @param max_min_runtime How many minutes can this run for?  Default is 15min
 #' @param ... Additional inputs...
+<<<<<<< HEAD
 #' @param keep_cross_validation_predictions Default is FALSE
+=======
+>>>>>>> 83812f6c2a19761c22212960e111bb45fc471cd1
 #'
 #' @return Returns a grid of models
 #' @export
@@ -39,7 +42,10 @@ ezr.h2o_gbm_grid = function(train_df,
                             prescreen_keepvars_threshold =0.005,
                             xval = TRUE,
                             folds = 5,
+<<<<<<< HEAD
                             keep_cross_validation_predictions= TRUE,
+=======
+>>>>>>> 83812f6c2a19761c22212960e111bb45fc471cd1
                             max_models = 1,
                             learnrate = 0.025,
                             max_min_runtime = 15,
