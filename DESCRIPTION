@@ -17,7 +17,6 @@ Depends: R (>= 3.1.0),
     caret (>= 6.0),
     classInt (>= 0.2),
     ggpubr (>= 0.1.7),
-    RJDBC (>= 0.2)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
