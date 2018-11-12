@@ -2,7 +2,7 @@
 % Please edit documentation in R/myfunct_factorize.R
 \name{myfunct_factorize}
 \alias{myfunct_factorize}
-\title{Title Factorize columns in data}
+\title{Factorize columns in data}
 \usage{
 myfunct_factorize(dataset, specific_fields_must_factor = FALSE,
   make_null_factor = TRUE, factor_le_unique_cnt = 3,
