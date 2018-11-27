@@ -45,5 +45,4 @@ ezr.plot_ordered_bar=function(dataset, column, vertical=TRUE,max_number=10){
 }
 
 
-ezr.plot_ordered_bar(dataset = diamonds, 'color', max_number = 3)
 
