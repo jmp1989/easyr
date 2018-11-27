@@ -18,7 +18,8 @@
 #' @return
 #' @export
 #'
-#' @examples
+#' @examples ezr.plot_clf_metrics(dataset = easyr::dataset_telco_churn_from_kaggle, truth = 'Churn','TotalCharges',higher_more_likely = FALSE)
+
 ezr.plot_clf_metrics = function(dataset, truth, prediction, higher_more_likely=TRUE){
 
 
@@ -70,4 +71,3 @@ ezr.plot_clf_metrics = function(dataset, truth, prediction, higher_more_likely=T
 }
 
 
-ezr.plot_clf_metrics(dataset = easyr::dataset_telco_churn_from_kaggle, truth = 'Churn','TotalCharges',higher_more_likely = FALSE)
