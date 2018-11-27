@@ -22,6 +22,3 @@ ezr.h2o_factor_fix = function(h2oframe, variables){
 
     return(h2oframe)
 }
-
-
-as.
