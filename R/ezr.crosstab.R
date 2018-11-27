@@ -14,6 +14,7 @@
 #' ezr.crosstab(mtcars, 'cyl', 'vs')
 ezr.crosstab = function(dataset, row_field, column_field, percent_denominator='row', rounding_digits=0, position = 'front'){
 
+
     # converts df %>% select(...)
     if (is.data.frame(row_field)==TRUE){
         row_field = names(row_field)
