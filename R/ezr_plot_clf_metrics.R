@@ -60,7 +60,7 @@ ezr.plot_clf_metrics = function(dataset, truth, prediction, higher_more_likely=T
   best_stopping_value=gainslift_data %>% filter(cum_gain == max(cum_gain, na.rm = TRUE)) %>% select(cumulative_data_fraction) %>% as.numeric()
 
 
-  plt_gain = gainslift_data %>% ggplot(aes(x=cumulative_data_fraction, y = cum_gain))+geom_path()+theme_classic()+labs(title = 'Cumulative Gain vs Guess', y = 'Gain (n)')+geom_vline(xintercept   = best_stopping_value, lty=3)
+  plt_gain = gainslift_data %>% ggplot(aes(x=cumulative_data_fraction, y = cum_gain))+geom_path()+theme_classic()+labs(title = 'Cumulative Gain vs Guess', y = 'Gain (n)', x = "% Tested")+geom_vline(xintercept   = best_stopping_value, lty=3)
 
 
 
