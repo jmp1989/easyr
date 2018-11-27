@@ -1,8 +1,8 @@
 
 
-#' Title Get Date Information
+#'  Get Date Information
 #'
-#' Quickly get a bunch of different date information
+#' Quickly get a bunch of different date information about a given column
 #'
 #' @param dataset A dataframe
 #' @param column the column that is in date format.
@@ -14,7 +14,7 @@
 #' @examples
 #'
 #'
-myfunct_get_date_values = function(dataset, column){
+ezr.get_date_info = function(dataset, column){
 
 
     result = dataset %>% mutate(
@@ -26,6 +26,8 @@ myfunct_get_date_values = function(dataset, column){
         !!paste0(column,"_qofyear") := lubridate::quarter(!!rlang::sym(column)),
         !!paste0(column,"_weekofyear") := lubridate::week(!!rlang::sym(column)),
         !!paste0(column,"_floormonth") := lubridate::floor_date(!!rlang::sym(column), unit = 'month'),
+        !!paste0(column,"_floorweek") := lubridate::floor_date(!!rlang::sym(column), unit = 'week'),
+
         !!paste0(column,"_nearest_month") := lubridate::round_date(!!rlang::sym(column), unit='month'),
         !!paste0(column,"_hour") := lubridate::hour(!!rlang::sym(column))
     )

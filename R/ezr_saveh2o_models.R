@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-myfunct_h2osavemodel = function(h2o_model, force=FALSE){
+ezr.saveh2o_models = function(h2o_model, force=FALSE){
 
   
   if(startsWith(tolower(class(h2o_model)), 'h2o')==FALSE){

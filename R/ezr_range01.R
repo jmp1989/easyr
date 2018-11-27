@@ -1,4 +1,4 @@
-#' Title Transform a value from range 0 to 1
+#'  Transform a value from range 0 to 1
 #'
 #' Easily rescale a value from 0 to 1.
 #'
@@ -8,10 +8,10 @@
 #'
 #' @examples
 #'
-#' myfunct_range01(mtcars$hp)
-#' myfunct_range01(mtcars %>% select(hp))
+#' ezr.range01(mtcars$hp)
+#' ezr.range01(mtcars %>% select(hp))
 #'
-myfunct_range01 = function(var){
+ezr.range01 = function(var){
     return((var - min(var, na.rm = T))/(max(var, na.rm = T) -
                                             min(var, na.rm = T)))
 }

@@ -11,7 +11,7 @@
 #' @return Returns a dataframe with ID added.
 #'
 #' @examples
-myfunct_make_id = function(dataset, unique_by_row=TRUE, grouping_fields = NULL, id_field_name='myid'){
+ezr.make_ids = function(dataset, unique_by_row=TRUE, grouping_fields = NULL, id_field_name='myid'){
   if( unique_by_row==TRUE){
     dataset = dataset %>% mutate(!!id_field_name := seq(1, nrow(dataset),1) )
   }

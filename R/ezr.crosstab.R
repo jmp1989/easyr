@@ -7,12 +7,12 @@
 #' @param column_field  Ideally place the target or outcome interested in comparinghere.
 #' @param percent_denominator What is the demoninator for percents?  Row is default so place target in column
 #' @param rounding_digits Default is 0 so whole percents are shown
-#'
+#' @param position Default is front.  Determines what is placed in the ()s
 #' @return Returns the cross tab results...
 #'
-#' @examples  myfunct_crosstab(mtcars, mtcars %>% select(cyl), mtcars %>% select(vs))
-#' myfunct_crosstab(mtcars, 'cyl', 'vs')
-myfunct_crosstab = function(dataset, row_field, column_field, percent_denominator='row', rounding_digits=0){
+#' @examples  ezr.crosstab(mtcars, mtcars %>% select(cyl), mtcars %>% select(vs))
+#' ezr.crosstab(mtcars, 'cyl', 'vs')
+ezr.crosstab = function(dataset, row_field, column_field, percent_denominator='row', rounding_digits=0, position = 'front'){
 
     # converts df %>% select(...)
     if (is.data.frame(row_field)==TRUE){
@@ -23,6 +23,6 @@ myfunct_crosstab = function(dataset, row_field, column_field, percent_denominato
         column_field = names(column_field)
     }
 
-    result = dataset %>% tabyl(!!rlang::sym(row_field), !!rlang::sym(column_field),show_missing_levels=TRUE) %>% janitor::adorn_percentages(denominator = percent_denominator, na.rm = FALSE) %>%   adorn_pct_formatting(rounding = "half up", digits = rounding_digits) %>% janitor::adorn_ns(position = 'front')
+    result = dataset %>% tabyl(!!rlang::sym(row_field), !!rlang::sym(column_field),show_missing_levels=TRUE) %>% janitor::adorn_percentages(denominator = percent_denominator, na.rm = FALSE) %>%   adorn_pct_formatting(rounding = "half up", digits = rounding_digits) %>% janitor::adorn_ns(position = position)
     return(result)
 }

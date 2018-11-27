@@ -10,9 +10,9 @@
 #'
 #' @examples
 #'
-#' myfunct_data_split(iris, train_pct = .45)
-#' myfunct_data_split(iris, train_pct = .45, return_as_single_df = TRUE)
-myfunct_data_split = function(dataset, train_pct,  return_as_single_df = FALSE,seed=2018, dataset_flag_name =c('train','test')){
+#' ezr.split_data(iris, train_pct = .45)
+#' ezr.split_data(iris, train_pct = .45, return_as_single_df = TRUE)
+ezr.split_data = function(dataset, train_pct,  return_as_single_df = FALSE,seed=2018, dataset_flag_name =c('train','test')){
     set.seed(seed)
 
     test_pct = 1-train_pct

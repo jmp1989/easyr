@@ -1,6 +1,6 @@
-#' Title Group-by Metrics
+#'  Group-by Metrics
 #'
-#' Quick group by metrics for a given group or groups.  Only Supports one for numerical values.
+#' Quick group by metrics for a given group or groups.  Only Supports one groupingfor numerical values. Supports multiple for character column groupbys
 #'
 #'
 #'
@@ -12,8 +12,9 @@
 #'
 #' @return Returns a dataframe of all the grouping levels plus the entire dataset as whole
 #'
-#' @examples
-myfunct_groupby_metric = function(dataset, groupby_fields, metric="mean(., na.rm=TRUE)", numeric_fields_only=TRUE, num_breaks = 5){
+#' @examples myfunct_groupby_metric(mtcars, 'vs')
+
+ezr.groupby_metric = function(dataset, groupby_fields, metric="mean(., na.rm=TRUE)", numeric_fields_only=TRUE, num_breaks = 5){
 
     if (numeric_fields_only==TRUE ){
         groupby_data = dataset %>% group_by(!!!rlang::syms(groupby_fields)) %>% select_if(base::is.numeric)
@@ -48,6 +49,16 @@ myfunct_groupby_metric = function(dataset, groupby_fields, metric="mean(., na.rm
     result = bind_rows(groupby_data, all_data)
 
     result = result %>% mutate_at(.vars=vars(groupby_fields), .funs = funs(replace_na(., 'ALL')))
+
+    # cleaning up NAs in binded data.
+
+
+    for (each_var in groupby_fields){
+        result = result %>% mutate(
+            !!each_var := ifelse(is.na(!!rlang::sym(each_var))==TRUE,'all_data',!!rlang::sym(each_var))
+        )
+    }
+
 
     return(result)
 }

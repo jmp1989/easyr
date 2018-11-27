@@ -1,4 +1,4 @@
-myfunct_split_data_by_date=function(dataset, date_field, use_percentage = TRUE, specific_percentage=0.8, by_date=FALSE, specific_date =NULL){
+ezr.split_by_date=function(dataset, date_field, use_percentage = TRUE, specific_percentage=0.8, by_date=FALSE, specific_date =NULL){
   
   data = dataset %>% arrange(!!rlang::sym(date_field) )%>% mutate(
     rowid  = row_number(),

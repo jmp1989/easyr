@@ -1,4 +1,4 @@
-#' Title  R Formula Creation
+#'   R Formula Creation
 #'
 #' Easily create a formula for R models.  This can help save time when there are many different variables as you can pass them in as a vector.
 #'
@@ -9,7 +9,7 @@
 #'
 #' @examples
 #'
-myfunct_rformula <- function(x, y){
+ezr.make_rformula <- function(x, y){
     x = base::as.list(x)
     y = as.character(y)
     result =as.formula(paste(y,paste(x,collapse = " + "), sep = " ~ "))

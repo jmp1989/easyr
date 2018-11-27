@@ -13,7 +13,7 @@
 #' @return Returns either a vector or a list given params.
 #'
 #' @examples
-myfunct_compare_vectors = function(x, y, only_return_in_x_not_y=FALSE,
+ezr.compare_vects = function(x, y, only_return_in_x_not_y=FALSE,
                                    only_return_in_y_not_x = FALSE,
                                    only_return_in_both = FALSE){
 

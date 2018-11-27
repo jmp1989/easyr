@@ -16,7 +16,7 @@
 #'
 #' @examples
 #'
-myfunct_h2o_compare_clf = function(vector_of_models, compare_train=FALSE, compare_test=TRUE, test_dataset=NULL, compare_xval=FALSE, compare_valid=FALSE, return_full_model_params = FALSE){
+ezr.h2o_compare_clf = function(vector_of_models, compare_train=FALSE, compare_test=TRUE, test_dataset=NULL, compare_xval=FALSE, compare_valid=FALSE, return_full_model_params = FALSE){
 
     if(is.null(test_dataset) ==TRUE & compare_test==TRUE){
         stop('Error: Enter an h2o dataframe for test')

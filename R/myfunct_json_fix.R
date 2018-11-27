@@ -1,4 +1,4 @@
-myfunct_json_fix = function(dataset, json_column){
+ezr.json_to_df = function(dataset, json_column){
   parsed_results= data.frame() # initialize
   
   json_to_df = function(df_row){

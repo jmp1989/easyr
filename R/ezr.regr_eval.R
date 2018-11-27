@@ -1,5 +1,5 @@
 
-#' Title Regression Evaluation Summary
+#'  Regression Evaluation Summary
 #'
 #' Get a variety of metrics around two numerical vectors.
 #'
@@ -10,7 +10,7 @@
 #' @return Returns a dataframe with many metrics on the comparison of the two numbers
 #'
 #' @examples
-myfunct_regression_eval = function(dataset, y_true, y_pred){
+ezr.regr_eval = function(dataset, y_true, y_pred){
     # Truth is denominator.  Under predictions max out at -99.99% error, overpredictions infinity
 
 

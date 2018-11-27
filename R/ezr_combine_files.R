@@ -11,7 +11,7 @@
 #' @return Returns a concatenated dataframe of all the files
 #'
 #' @examples
-myfunct_combine_files = function(directory = getwd(), pattern="*.csv" , keep_label_file_name_origin = FALSE, type='csv'){
+ezr.combine_files = function(directory = getwd(), pattern="*.csv" , keep_label_file_name_origin = FALSE, type='csv'){
 
     print(paste0('reading files from', directory))
 

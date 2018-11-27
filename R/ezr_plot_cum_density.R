@@ -13,9 +13,9 @@
 #'
 #' myplot_cum_density(Sonar, 'V11')
 
-#' myplot_cum_density(Sonar, numeric_field='V11', grouping_field='Class')
+#' ezr.plot_cum_density(Sonar, numeric_field='V11', grouping_field='Class')
 
-myplot_cum_density=function(dataset, numeric_field, grouping_field=NULL, title=NULL){
+ezr.plot_cum_density=function(dataset, numeric_field, grouping_field=NULL, title=NULL){
 
     if (is.null(grouping_field)){
         result_plot =  ggplot(dataset,
