@@ -56,7 +56,6 @@ ezr.plot_clf_metrics = function(dataset, truth, prediction, higher_more_likely=T
 
   plt_capt_rate=autoplot(dataset %>% yardstick::gain_curve(!!rlang::sym(truth),!!rlang::sym(prediction)))+theme_classic() + ggplot2::annotate(geom='text', x=75, y=25, label = paste0('Capture Rate 5%: ', capt5, '\n Capture Rate 15%: ',capt15 , '\n Capture Rate 25%: ', capt25), size=3)+labs(title = 'Cumulative Capture Rate') + geom_abline(intercept = 0, slope = 1, lty=3)
 
-  gridExtra::grid.arrange(plt_capt_rate, plt_distribution, plt_auc, plt_pr, plt_cum_lift)
 
   best_stopping_value=gainslift_data %>% filter(cum_gain == max(cum_gain, na.rm = TRUE)) %>% select(cumulative_data_fraction) %>% as.numeric()
 
