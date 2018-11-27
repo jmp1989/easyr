@@ -47,6 +47,3 @@ ezr.fix_colnames = function(vector, periods2underscore=TRUE, spaces_to_underscor
 
 
 
-ezr.fix_colnames(iris)
-
-
