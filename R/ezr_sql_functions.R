@@ -9,7 +9,7 @@
 #' @return  Returns a dataframe of results
 #'
 #' @examples
-mysql_sqlsample_table = function(tbl_name, con=con, limit_rows = 20){
+ezr.sql_sample_query = function(tbl_name, con=con, limit_rows = 20){
 
     sample_query = paste0("Select * from ", tbl_name, " limit ", limit_rows)
     result = RJDBC::dbGetQuery(conn = con, sample_query)
@@ -27,7 +27,7 @@ mysql_sqlsample_table = function(tbl_name, con=con, limit_rows = 20){
 #' @return Returns a dataframe of results
 #'
 #' @examples
-my_sql_safe_query=function(query, con=con, limit_rows = 20){
+ezr.sql_safe_query=function(query, con=con, limit_rows = 20){
 
 
     sample_query = paste0(query, " limit ", limit_rows)

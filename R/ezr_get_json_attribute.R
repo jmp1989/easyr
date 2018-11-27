@@ -1,15 +1,15 @@
 
-#' Title
+#' Get A Specific Field in JSON
 #'
 #' @param dataset 
-#' @param json_column 
+#' @param dataframe column that contains json values
 #' @param attribute 
 #'
 #' @return
 #' @export
 #'
 #' @examples
-myfunct_extract_json_element = function(dataset, json_column, attribute){
+ezr.get_json_attribute = function(dataset, json_column, attribute){
   nrows = nrow(dataset)
   
   master_df = data.frame()

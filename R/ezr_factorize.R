@@ -13,8 +13,8 @@
 #'
 #' @return Returns the corrected dataframe and a listing of the datatype changes
 #'
-#' @examples myfunct_factorize(mtcars)
-myfunct_factorize = function(dataset, specific_fields_must_factor=FALSE, make_null_factor=TRUE, factor_le_unique_cnt=3, consider_na_in_count=TRUE){
+#' @examples ezr.factorize(mtcars)
+ezr.factorize = function(dataset, specific_fields_must_factor=FALSE, make_null_factor=TRUE, factor_le_unique_cnt=3, consider_na_in_count=TRUE){
     #### converts categoricals to factors
     #### creates NULLs as own level (optional)
     #### factors specific fields no matter wat

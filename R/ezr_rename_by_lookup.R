@@ -13,7 +13,7 @@
 #'
 #' @examples
 
-myfunct_lookup_rename = function(df, df_column_lookup) {
+ezr.rename_by_lookup = function(df, df_column_lookup) {
   result = df
   
   # keep some names constant...

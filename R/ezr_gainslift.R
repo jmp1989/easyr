@@ -9,11 +9,17 @@
 #' @param round_value Default is 2.  Rounds values to 2 decimal places for a nicer user experience.
 #' @return Returns a dataframe with various metrics at each progression into the scorecard.
 #'
-#' @examples myfunct_gainslift_funct(df = dataset_telco_churn_from_kaggle, binary_target = 'Churn', prediction ='TotalCharges',higher_morelikely = FALSE )
-myfunct_gainslift_funct = function(df, binary_target, prediction, higher_morelikely=TRUE, round_value=2){
+#' @examples ezr.gainslift(df = dataset_telco_churn_from_kaggle, binary_target = 'Churn', prediction ='TotalCharges',higher_morelikely = FALSE )
+ezr.gainslift = function(df, binary_target, prediction, higher_morelikely=TRUE, round_value=6){
     #if (higher_score_higher_default==FALSE){
     #  df[prediction] = df[prediction] * -1 # resorting if higher is lower chance of default
     #}
+
+    if(class(df)=='H2OFrame'){
+
+        retain_vars = c(binary_target, prediction)
+        df=as.data.frame(df[retain_vars])
+    }
 
     df = df %>% select_(.dots = c(binary_target, prediction))
 
@@ -78,3 +84,5 @@ myfunct_gainslift_funct = function(df, binary_target, prediction, higher_morelik
 
     return(gains_lift_table)
 }
+
+

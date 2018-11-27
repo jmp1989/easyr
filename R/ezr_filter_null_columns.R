@@ -10,7 +10,7 @@
 #' @return Returns corrected dataframe
 #'
 #' @examples
-myfunct_dropnullcolumns = function(dataset, threshold_to_eliminate=0.90, keep_columns = NULL, return_only_corrected_df=FALSE){
+ezr_filter_null_columns = function(dataset, threshold_to_eliminate=0.90, keep_columns = NULL, return_only_corrected_df=FALSE){
 
     print('Returns a list of 3 dataframes:  corrected df, na_frequency_table ')
 
