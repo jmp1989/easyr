@@ -1,11 +1,11 @@
 #' Xgboost Grid
 #'
 #' Xgboost Grid Search.  Allows for pre-screening an xgboost model to eliminate features and then following up with an xgboost model of hyper parameters.  There are preset values for some of the hyper parameters, but others should be added as desired... especially , reg_alpha, min_child_weight.
-#' 
+#'
 #' Hyper parameters should be tuned!  The ones preset to search over are available for convience only.
-#' 
-#' 
-#' 
+#'
+#'
+#'
 #'
 #' @param train_df   Training dataframe
 #' @param valid_df   If not provided, the training dataframe is split for you 80/20
@@ -29,58 +29,60 @@
 #' @param gamma Please tune
 #' @param ...  Hyper parameters
 #' @param reg_lambda This is L2 regularization.  L1 is reg_alpha, please pass in under ...
+#' @param novalid_ok Run a model just the training dataset only.
 #'
 #' @return A grid searched models
 #' @export
 #'
 #' @examples
-ezr.h2o_xgb_grid=function (train_df, valid_df = NULL, xvars = names(train_df), 
-          yvar = "target", grid_id = "xgb_grid", prescreenxgbm = TRUE, 
-          prescreen_keepvars_criteria = "number", prescreen_keepvars_threshold = 30, 
-          xval = TRUE, folds = 5, keep_cross_validation_predictions = FALSE, 
-          max_models = 1, learnrate = c(0.025), max_min_runtime = 15, 
-          ntrees = c(125), seed = 2018, max_depth = c(3,5,7,9) , colsample_bytree = c(1, 0.5, 0.8), sample_rate=c(1, 0.8, 0.6), gamma=c(0,1), reg_lambda = c(0, 0.5, 0.25),... ){
-  hyper_params = 
-    list(max_depth = max_depth, 
-         learn_rate = learnrate, 
-                      ntrees = ntrees, 
-         sample_rate = sample_rate, 
-         reg_lambda = reg_lambda,
-         colsample_bytree = colsample_bytree, 
-         gamma = gamma,...)
+ezr.h2o_grid_xgb = function (train_df, valid_df = NULL, xvars = names(train_df),
+                             yvar = "target", grid_id = "xgb_grid", prescreenxgbm = TRUE, novalid_ok = FALSE,
+                             prescreen_keepvars_criteria = "number", prescreen_keepvars_threshold = 30,
+                             xval = TRUE, folds = 5, keep_cross_validation_predictions = FALSE,
+                             max_models = 1, learnrate = c(0.025), max_min_runtime = 15,
+                             ntrees = c(125), seed = 2018, max_depth = c(3, 5, 7, 9),
+                             colsample_bytree = c(1, 0.5, 0.8), sample_rate = c(1, 0.8,
+                                                                                0.6), gamma = c(0, 1), reg_lambda = c(0, 0.5, 0.25),          ...){
+
+    if (keep_cross_validation_predictions==TRUE | keep_cross_validation_predictions=='TRUE' | keep_cross_validation_predictions=='True'){
+        keep_cross_validation_predictions=TRUE
+    } else {
+        keep_cross_validation_predictions = FALSE
+    }
+
+  hyper_params = list(max_depth = max_depth, learn_rate = learnrate,
+                      ntrees = ntrees, sample_rate = sample_rate, reg_lambda = reg_lambda,
+                      colsample_bytree = colsample_bytree, gamma = gamma)
   print(hyper_params)
-  
-  
-  
-  
-  
-  search_criteria = list(strategy = "RandomDiscrete", seed = seed, 
+  search_criteria = list(strategy = "RandomDiscrete",
                          stopping_metric = "AUTO", stopping_tolerance = 0.001,
-                         stopping_rounds = 2, max_runtime_secs = max_min_runtime * 
+                         stopping_rounds = 2, max_runtime_secs = max_min_runtime *
                            60, max_models = max_models)
-  if (is.null(valid_df) == TRUE) {
+
+  print(search_criteria)
+  if (is.null(valid_df) == TRUE & novalid_ok==FALSE) {
     print("No validation DF was supplied - splitting supplied DF in 80/20 split to avoid overfitting")
     splits = h2o.splitFrame(train_df, ratios = c(0.8), seed = seed)
     train_df = splits[[1]]
     valid_df = splits[[2]]
   }
   if (prescreenxgbm == TRUE) {
-    gbm_screen = h2o.xgboost(x = xvars, y = yvar, training_frame = train_df, categorical_encoding = 'Enum',
-                         model_id = "gbm_screen", ntrees = 125, sample_rate = 0.8,  colsample_bytree = 0.8, learn_rate = 0.1)
+    gbm_screen = h2o.xgboost(x = xvars, y = yvar, training_frame = train_df,
+                             categorical_encoding = "Enum", model_id = "xgb_screen",
+                             ntrees = 125, sample_rate = 0.8, colsample_bytree = 0.8,
+                             learn_rate = 0.1, seed=myseed)
+    xgb_importance = as.data.frame(h2o.varimp(gbm_screen))
+    xgb_importance = xgb_importance %>% separate(col = variable,
+                                                 into = c("variable", "level"), sep = "\\.") %>% group_by(variable) %>%
+      summarise(percentage = sum(percentage)) %>% ungroup() %>%
+      arrange((desc(percentage)))
 
-    
-    
-    xgb_importance =as.data.frame(h2o.varimp(gbm_screen))
-    xgb_importance = xgb_importance %>% separate( col=variable, into= c('variable','level'), sep = '\\.') %>% group_by(
-      variable
-    ) %>% summarise(
-      percentage = sum(percentage)
-    ) %>% ungroup() %>% arrange((desc(percentage)))
-    
-    
-        if (prescreen_keepvars_criteria == "percent") {
-          xgb_importance = xgb_importance %>% filter(percentage > 
-                                                     prescreen_keepvars_threshold)
+
+
+
+    if (prescreen_keepvars_criteria == "percent") {
+      xgb_importance = xgb_importance %>% filter(percentage >
+                                                   prescreen_keepvars_threshold)
       keep_these_vars = c(xgb_importance$variable)
     }
     if (prescreen_keepvars_criteria == "number") {
@@ -90,29 +92,70 @@ ezr.h2o_xgb_grid=function (train_df, valid_df = NULL, xvars = names(train_df),
       xgb_importance = xgb_importance %>% dplyr::slice(1:prescreen_keepvars_threshold)
       keep_these_vars = c(xgb_importance$variable)
     }
-    print(paste0("Used a GBM to pre-screen variables to avoid excessive features in model...", 
+    print(paste0("Used a GBM to pre-screen variables to avoid excessive features in model...",
                  length(keep_these_vars), " were selected to be be used in final model tuning"))
     xvars = keep_these_vars
   }
-  if (max_models <= 1) {
-    grid = h2o.grid(algorithm = "xgboost", training_frame = train_df, 
-                    validation_frame = valid_df, x = xvars, y = yvar, sample_rate = 0.8, colsample_bytree=0.9, learn_rate = 0.1,
-                    search_criteria = search_criteria, grid_id = grid_id)
-  }
-  if (max_models > 1) {
-    if (xval == FALSE) {
-      grid = h2o.grid(algorithm = "xgboost", training_frame = train_df, 
-                      validation_frame = valid_df, x = xvars, y = yvar, score_tree_interval=5,
-                      search_criteria = search_criteria, hyper_params = hyper_params, keep_cross_validation_predictions = keep_cross_validation_predictions,
-                      grid_id = grid_id)
+
+
+  if(novalid_ok==FALSE){
+
+    if (max_models <= 1) {
+      grid = h2o.grid(algorithm = "xgboost", training_frame = train_df,
+                      validation_frame = valid_df, x = xvars, y = yvar,
+                      seed=seed,
+                      sample_rate = 0.8, colsample_bytree = 0.9, learn_rate = 0.1,
+                      search_criteria = search_criteria, grid_id = grid_id)
     }
-    if (xval == TRUE) {
-      grid = h2o.grid(algorithm = "xgboost", training_frame = train_df, 
-                      validation_frame = valid_df, x = xvars, y = yvar, score_tree_interval = 5,keep_cross_validation_predictions =keep_cross_validation_predictions,
-                      nfolds = folds, fold_assignment = "Modulo", search_criteria = search_criteria, 
-                      hyper_params = hyper_params, grid_id = grid_id)
+    if (max_models > 1) {
+      if (xval == FALSE) {
+        grid = h2o.grid(algorithm = "xgboost", training_frame = train_df,
+                        validation_frame = valid_df, x = xvars, y = yvar
+                        ,seed=seed
+                        ,score_tree_interval = 5, search_criteria = search_criteria,
+                        hyper_params = hyper_params,
+                        grid_id = grid_id)
+      }
+      if (xval == TRUE) {
+        grid = h2o.grid(algorithm = "xgboost", training_frame = train_df,
+                        validation_frame = valid_df, x = xvars, y = yvar,
+                        ,seed=seed
+                        ,score_tree_interval = 5, keep_cross_validation_predictions = keep_cross_validation_predictions,
+                        nfolds = folds, fold_assignment = "Modulo", search_criteria = search_criteria,
+                        hyper_params = hyper_params, grid_id = grid_id)
+      }
     }
   }
-  return(grid) }
+  if(novalid_ok==TRUE){
+
+    if (max_models <= 1) {
+      grid = h2o.grid(algorithm = "xgboost", training_frame = train_df,
+                      x = xvars, y = yvar,
+                      sample_rate = 0.8, colsample_bytree = 0.9, learn_rate = 0.1,seed=seed,
+                      search_criteria = search_criteria, grid_id = grid_id)
+    }
+    if (max_models > 1) {
+      if (xval == FALSE) {
+        grid = h2o.grid(algorithm = "xgboost", training_frame = train_df,
+                        x = xvars, y = yvar,
+                        score_tree_interval = 5, search_criteria = search_criteria
+                        ,seed=seed
+                        ,hyper_params = hyper_params,
+                        grid_id = grid_id)
+      }
+      if (xval == TRUE) {
+        grid = h2o.grid(algorithm = "xgboost", training_frame = train_df,
+                        x = xvars, y = yvar,
+                        score_tree_interval = 5, keep_cross_validation_predictions = keep_cross_validation_predictions,
+                        nfolds = folds, fold_assignment = "Modulo", search_criteria = search_criteria
+                        ,seed=seed
+                        ,hyper_params = hyper_params, grid_id = grid_id)
+      }
+    }
+  }
+
+  print(h2o::h2o.getGrid(grid_id = grid_id, sort_by = 'AUC', decreasing = TRUE))
+  return(grid)
+}
 
 
