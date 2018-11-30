@@ -1,6 +1,6 @@
 #' GBM Grid Search
 #'
-#' Off the shelf grid search for GBM w/ hyper parameters.  Initial parameters
+#' Off the shelf grid search for GBM w/ hyper parameters.
 #'
 #' @param train_df h2o dataframe
 #' @param valid_df a validation dataframe.  Default is NULL.  If NULL it the train_df will be split into 80/20 split and the 20% will be used for validating to guard against overfit
@@ -8,6 +8,7 @@
 #' @param yvar  target
 #' @param grid_id grid id to use.  Default is gbm_grid
 #' @param prescreengbm  Default is TRUE.  Should a pre-screen be run to eliminate excess variables?  This will run a gbm with default params, and be used to eliminate variables before re-training.  This is to prevent against 100s of variables with 0.001 or similar importance criteria in model.
+#' @param notvalid_ok FALSE by default.  If TRUE, then there is no validation dataset when only training dataset is entered.
 #' @param prescreen_keepvars_criteria Valid values are 'percent' and 'number' Default is 'percent' importance.  Number refers to how many variables such as 5/10/100
 #' @param prescreen_keepvars_threshold   Default threshold is 0.01 for percent for retention.  Enter an integer for 'count'.  If the value is <= 1 and the <prescreen_keepvars_criteria> is equal to 'number' then this will default to 25.
 #' @param xval Default is TRUE.
@@ -35,6 +36,7 @@ ezr.h2o_gbm_grid = function(train_df,
                             yvar = 'target',
                             grid_id = 'gbm_grid',
                             prescreengbm=TRUE,
+                            novalid_ok = FALSE,
                             prescreen_keepvars_criteria = 'percent',
                             prescreen_keepvars_threshold =0.005,
                             xval = TRUE,
@@ -53,12 +55,11 @@ ezr.h2o_gbm_grid = function(train_df,
     ntrees = c(ntrees),
     sample_rate = c(0.8,1),
     col_sample_rate = c(0.8,0.5),
-    histogram_type = c('QuantilesGlobal','UniformAdaptive'))
+    histogram_type = c('QuantilesGlobal','UniformAdaptive'),...)
 
 
     search_criteria = list(
         strategy =  "RandomDiscrete"
-        , seed = seed
         , stopping_metric = 'AUTO'
         ,stopping_tolerance =  0.001
         , stopping_rounds = 2
@@ -66,8 +67,14 @@ ezr.h2o_gbm_grid = function(train_df,
         , max_models = max_models)
 
 
+    if (keep_cross_validation_predictions==TRUE | keep_cross_validation_predictions=='TRUE' | keep_cross_validation_predictions=='True'){
+        keep_cross_validation_predictions=TRUE
+    } else {
+        keep_cross_validation_predictions = FALSE
+    }
 
-    if(is.null(valid_df)==TRUE){
+
+    if(is.null(valid_df)==TRUE & novalid_ok==FALSE){
         print('No validation DF was supplied - splitting supplied DF in 80/20 split to avoid overfitting')
 
        splits = h2o.splitFrame(train_df, ratios = c(0.8), seed = seed)
@@ -77,7 +84,7 @@ ezr.h2o_gbm_grid = function(train_df,
 
 if(prescreengbm==TRUE){
 
-    gbm_screen=h2o.gbm(x=xvars, y=yvar, training_frame = h2odf, model_id = 'gbm_screen',ntrees = 75, sample_rate = .8, col_sample_rate = .8)
+    gbm_screen=h2o.gbm(x=xvars, y=yvar, training_frame = h2odf, model_id = 'gbm_screen',ntrees = 75, sample_rate = .8, col_sample_rate = .8,seed=seed)
     gbm_screen_vars=as.data.frame(h2o.varimp(gbm_screen))
 
     if(prescreen_keepvars_criteria=='percent'){
@@ -99,7 +106,7 @@ if(prescreengbm==TRUE){
     xvars = keep_these_vars
 }
 
-
+if(novalid_ok==FALSE){
 
 # use default gbm params if running single model
 if(max_models <= 1){
@@ -107,9 +114,11 @@ if(max_models <= 1){
                     training_frame = h2odf.train,
                     validation_frame =h2odf.valid
                     ,x=xvars
+                    , seed = seed
                     ,y=yvar
                     ,search_criteria = search_criteria
                     ,grid_id = grid_id
+                    ,keep_cross_validation_predictions  = keep_cross_validation_predictions
                     )
 }
 
@@ -122,6 +131,7 @@ if(max_models > 1){
                     validation_frame =h2odf.valid
              ,x=xvars
              ,y=yvar
+             ,seed=seed
              ,search_criteria = search_criteria
              ,hyper_params = hyper_params
              ,grid_id = grid_id
@@ -133,15 +143,67 @@ if(max_models > 1){
                             validation_frame =h2odf.valid
                             ,x=xvars
                             ,y=yvar
+                            ,seed=seed
                             ,nfolds = folds
-                            ,fold_assignment ='Modulo'
+                            ,fold_assignment = 'Modulo'
                             ,search_criteria = search_criteria
                             ,hyper_params = hyper_params
                             ,grid_id = grid_id
+                            ,keep_cross_validation_predictions=keep_cross_validation_predictions
 
             )
     }
 }
+}
+if(novalid_ok==TRUE){
+
+    # use default gbm params if running single model
+    if(max_models <= 1){
+        grid = h2o.grid(algorithm = 'gbm',
+                        training_frame = h2odf.train,
+                        ,x=xvars
+                        ,y=yvar
+                        ,seed=seed
+                        ,search_criteria = search_criteria
+                        ,grid_id = grid_id
+                        ,keep_cross_validation_predictions=keep_cross_validation_predictions
+        )
+    }
+
+    # if more than one model, then use hyper param search
+    if(max_models > 1){
+
+        if (xval==FALSE){
+            grid = h2o.grid(algorithm = 'gbm',
+                            training_frame = h2odf.train,
+                            ,x=xvars
+                            ,y=yvar
+                            ,seed=seed
+                            ,search_criteria = search_criteria
+                            ,hyper_params = hyper_params
+                            ,grid_id = grid_id
+            )
+        }
+        if ( xval==TRUE){
+            grid = h2o.grid(algorithm = 'gbm',
+                            training_frame = h2odf.train,
+                            ,x=xvars
+                            ,y=yvar
+                            ,nfolds = folds
+                            ,seed=seed
+                            ,fold_assignment ='Modulo'
+                            ,search_criteria = search_criteria
+                            ,hyper_params = hyper_params
+                            ,grid_id = grid_id
+                            ,keep_cross_validation_predictions = keep_cross_validation_predictions
+
+            )
+        }
+    }
+}
+
+
+
 
     return(grid)
 }

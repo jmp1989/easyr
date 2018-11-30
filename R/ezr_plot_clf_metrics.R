@@ -53,8 +53,10 @@ ezr.plot_clf_metrics = function(dataset, truth, prediction, higher_more_likely=T
   capt15 = gainslift_data %>% filter(cumulative_data_fraction==0.15) %>% select(cum_capture_rate) %>% as.numeric() %>% round(2)
   capt25 = gainslift_data %>% filter(cumulative_data_fraction==0.25) %>% select(cum_capture_rate) %>% as.numeric() %>% round(2)
 
+  baseline_guess_rate = gainslift_data %>% slice(100:100)%>% mutate(random_guess=cum_bads / n_records)%>%dplyr::select(random_guess)%>% as.numeric()
 
-  plt_capt_rate=autoplot(dataset %>% yardstick::gain_curve(!!rlang::sym(truth),!!rlang::sym(prediction)))+theme_classic() + ggplot2::annotate(geom='text', x=75, y=25, label = paste0('Capture Rate 5%: ', capt5, '\n Capture Rate 15%: ',capt15 , '\n Capture Rate 25%: ', capt25), size=3)+labs(title = 'Cumulative Capture Rate') + geom_abline(intercept = 0, slope = 1, lty=3)
+
+  plt_capt_rate = gainslift_data %>% ggplot(aes(x=cumulative_data_fraction, y = cum_capture_rate))+geom_path()+ geom_abline(intercept = 0, slope = 1, lty=3)+geom_line(aes(y=response_rate))+geom_smooth(aes(y=response_rate),se = FALSE)+geom_hline(aes(yintercept=baseline_guess_rate), lty=3) + ggplot2::labs(caption =  paste0('Capture Rate 5%: ', 100*capt5, '% \n Capture Rate 15%: ',capt15*100 , '% \n Capture Rate 25%: ', 100*capt25,'%'), y='CaptRate / RespRate', x='% Tested')
 
 
   best_stopping_value=gainslift_data %>% filter(cum_gain == max(cum_gain, na.rm = TRUE)) %>% select(cumulative_data_fraction) %>% as.numeric()
@@ -64,7 +66,7 @@ ezr.plot_clf_metrics = function(dataset, truth, prediction, higher_more_likely=T
 
 
 
-  result =cowplot::plot_grid(plt_capt_rate, plt_distribution, plt_auc, plt_pr, plt_cum_lift, plt_gain)
+  result =cowplot::plot_grid(plt_capt_rate, plt_distribution, plt_auc, plt_pr, plt_cum_lift, plt_gain, ncol = 2)
 
   return(result)
 }

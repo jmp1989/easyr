@@ -38,7 +38,14 @@ ezr.h2o_glm_grid=function (train_df, valid_df = NULL, xvars = names(train_df), n
                            yvar = "target", grid_id = "glm_grid", use_prescreen=TRUE, prescreen_keepvars_criteria = 'number', prescreen_keepvars_threshold = 30,
                            xval = TRUE, folds = 5, keep_cross_validation_predictions = FALSE,
                            max_models = 4, max_min_runtime = 15,
-                           seed = 2018, ... ){
+                            ... ){
+
+    # check for cv predictions retention
+    if (keep_cross_validation_predictions==TRUE | keep_cross_validation_predictions=='TRUE' | keep_cross_validation_predictions=='True'){
+        keep_cross_validation_predictions=TRUE
+    } else {
+        keep_cross_validation_predictions = FALSE
+    }
 
   hyper_params =
     list(alpha = c(0,.1,0.25, 0.5, 0.75, 1))
@@ -59,7 +66,7 @@ ezr.h2o_glm_grid=function (train_df, valid_df = NULL, xvars = names(train_df), n
   # use an xgboost model to screen for the glm...
   if (use_prescreen == TRUE) {
     gbm_screen = h2o.xgboost(x = xvars, y = yvar, training_frame = train_df, categorical_encoding = 'Enum',
-                             model_id = "gbm_screen", ntrees = 125, sample_rate = 0.8,  colsample_bytree = 0.8, learn_rate = 0.1)
+                             model_id = "gbm_screen", ntrees = 125, sample_rate = 0.8,  colsample_bytree = 0.8, learn_rate = 0.1,seed=seed)
 
     xgb_importance =as.data.frame(h2o.varimp(gbm_screen))
     xgb_importance = xgb_importance %>% separate( col=variable, into= c('variable','level'), sep = '\\.') %>% group_by(
@@ -105,6 +112,7 @@ ezr.h2o_glm_grid=function (train_df, valid_df = NULL, xvars = names(train_df), n
         , lambda = 0 # forces regular glm
         , max_runtime_secs=max_min_runtime*60
         , model_id=paste0('glm_model_',yvar)
+        ,seed=seed
         , ...
       )
     }
@@ -115,6 +123,7 @@ ezr.h2o_glm_grid=function (train_df, valid_df = NULL, xvars = names(train_df), n
         , y = yvar
         , family = family
         , nfolds = folds
+        , seed=seed
         , compute_p_values = TRUE
         , remove_collinear_columns = TRUE
         , keep_cross_validation_predictions = keep_cross_validation_predictions
@@ -145,6 +154,7 @@ ezr.h2o_glm_grid=function (train_df, valid_df = NULL, xvars = names(train_df), n
                          , x = xvars
                          , y = yvar
                          , family=family
+                         , seed = seed
                          , alpha = 0.5
                     , max_runtime_secs=max_min_runtime*60
                     , lambda_search=TRUE
@@ -158,6 +168,7 @@ ezr.h2o_glm_grid=function (train_df, valid_df = NULL, xvars = names(train_df), n
                            , validation_frame = valid_df
                            , x = xvars
                            , y = yvar
+                           , seed=seed
                            , family = family
                            , nfolds = folds
                            , fold_assignment = 'Modulo'
@@ -178,6 +189,7 @@ ezr.h2o_glm_grid=function (train_df, valid_df = NULL, xvars = names(train_df), n
                       , validation_frame = valid_df
                       , x = xvars
                       , y = yvar
+                      , seed=seed
                       , family = family
                       , search_criteria = search_criteria
                       , hyper_params = hyper_params
@@ -193,6 +205,7 @@ ezr.h2o_glm_grid=function (train_df, valid_df = NULL, xvars = names(train_df), n
         , x = xvars
         , y = yvar
         , family = family
+        , seed=seed
         , keep_cross_validation_predictions =keep_cross_validation_predictions
         , nfolds = folds
         , fold_assignment = "Modulo"
