@@ -3,7 +3,7 @@
 #' Xgboost Grid Search.  Allows for pre-screening an xgboost model to eliminate features and then following up with an xgboost model of hyper parameters.  There are preset values for some of the hyper parameters, but others should be added as desired... especially , reg_alpha, min_child_weight.
 #'
 #' Hyper parameters should be tuned!  The ones preset to search over are available for convience only.
-#' #
+#'
 #'
 #'
 #'

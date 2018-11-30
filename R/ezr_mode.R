@@ -16,7 +16,7 @@ ezr.mode = function(dataframe, column, single_mode=FALSE) {
     tabulated=tabulate(match(dataframe[[column]], uniques))
     result=uniques[tabulated == max(tabulated)]
 
-    if(single_mode==TRUE & length(result)>1==TRUE){
+    if(single_mode==TRUE & length(result)>1 ){
         num_ties=length(result)
         print(paste0('There are this many ties for most common value: ', num_ties, ' - returning a single value'))
         result=result[1]
