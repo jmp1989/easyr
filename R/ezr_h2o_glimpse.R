@@ -21,8 +21,8 @@ ezr.h2o.glimpse = function(h2odataset, n_head_values=0){
   head=as.data.frame(h2o::h2o.head(h2odataset,n_head_values))
   head= head %>% summarise_all(., toString) %>% gather('variable', 'head_values')
   
-  types=do.call(base::rbind, h2o.getTypes(h2o_prod))
-  types=data.frame(variable = names(h2o_prod), types, col_index = seq(1, length(names(h2o_prod)))) %>% left_join(head)
+  types=do.call(base::rbind, h2o.getTypes(h2odataset))
+  types=data.frame(variable = names(h2odataset), types, col_index = seq(1, length(names(dataset)))) %>% left_join(head)
   
   if(n_head_values <1 | is.null(n_head_values)==TRUE){
     types$n_head_values = NULL
