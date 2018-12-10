@@ -6,7 +6,7 @@
 \usage{
 ezr.h2o_gbm_grid(train_df, valid_df = NULL, xvars = names(train_df),
   yvar = "target", grid_id = "gbm_grid", prescreengbm = TRUE,
-  prescreen_keepvars_criteria = "percent",
+  novalid_ok = FALSE, prescreen_keepvars_criteria = "percent",
   prescreen_keepvars_threshold = 0.005, xval = TRUE, folds = 5,
   keep_cross_validation_predictions = TRUE, max_models = 1,
   learnrate = 0.025, max_min_runtime = 15, ntrees = 125,
@@ -46,12 +46,14 @@ ezr.h2o_gbm_grid(train_df, valid_df = NULL, xvars = names(train_df),
 \item{seed}{Default is 2018}
 
 \item{...}{Additional inputs...}
+
+\item{notvalid_ok}{FALSE by default.  If TRUE, then there is no validation dataset when only training dataset is entered.}
 }
 \value{
 Returns a grid of models
 }
 \description{
-Off the shelf grid search for GBM w/ hyper parameters.  Initial parameters
+Off the shelf grid search for GBM w/ hyper parameters.
 }
 \examples{
 library(h2o)

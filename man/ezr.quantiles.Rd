@@ -16,9 +16,12 @@ ezr.quantiles(dataset, exclude_columns = NULL, only_columns = NULL,
 
 \item{number_quantiles}{20 will get you every 5%tile, 100 will get you 0-100, etc.  Default is 20}
 }
+\value{
+A dataframe of quantiles for each numerical column
+}
 \description{
-Quantiles
+Get the quantiles of each numerical column.
 }
 \examples{
-ezr.quantiles(mtcars, number_of_quantiles = 10)
+ezr.quantiles(mtcars, number_of_quantiles = 10); ezr.quantiles(diamonds)
 }

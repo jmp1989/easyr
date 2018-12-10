@@ -10,7 +10,7 @@ ezr.h2o_glm_grid(train_df, valid_df = NULL, xvars = names(train_df),
   prescreen_keepvars_criteria = "number",
   prescreen_keepvars_threshold = 30, xval = TRUE, folds = 5,
   keep_cross_validation_predictions = FALSE, max_models = 4,
-  max_min_runtime = 15, seed = 2018, ...)
+  max_min_runtime = 15, ...)
 }
 \arguments{
 \item{train_df}{Training dataframe}
@@ -43,9 +43,9 @@ ezr.h2o_glm_grid(train_df, valid_df = NULL, xvars = names(train_df),
 
 \item{max_min_runtime}{Defaults to 15min.  Remember to enter this as minutes, not seconds.}
 
-\item{seed}{Defaults to 2018}
-
 \item{...}{Additional model parameters.}
+
+\item{seed}{Defaults to 2018}
 }
 \value{
 A grid searched models

@@ -5,7 +5,7 @@
 \title{Drop Constants}
 \usage{
 ezr.drop_constant(dataset, return_n_distinct_tbl = FALSE,
-  exclude_cols = NULL, remove_NAs = TRUE)
+  exclude_cols = NULL, include_NAs = TRUE)
 }
 \arguments{
 \item{dataset}{Dataframe}

@@ -12,10 +12,9 @@ ezr.get_col_index(dataset, specific = NULL)
 \item{specific}{Null by default.  Enter a specific column if you need it}
 }
 \description{
-Get all the index positions of each column in a dataframe.
+Get all the index positions of each column in a dataframe. You can also get a specific index value
 }
 \examples{
-ezr.get_col_index(dataset=mtcars, 'am')
 ezr.get_col_index(dataset=mtcars)
 
 
