@@ -7,10 +7,11 @@
 #' @param prediction The prediction value.   Higher values = higher chance of obtaining a 1
 #' @param higher_morelikely Default is TRUE.  If a higher prediction value is more likely to be a 1.  Set to false if higher is going to be a 0.
 #' @param round_value Default is 2.  Rounds values to 2 decimal places for a nicer user experience.
+#' @param concise_result Default is TRUE.  Won't print every record of gainslift table.
 #' @return Returns a dataframe with various metrics at each progression into the scorecard.
 #'
 #' @examples ezr.gainslift(df = dataset_telco_churn_from_kaggle, binary_target = 'Churn', prediction ='TotalCharges',higher_morelikely = FALSE )
-ezr.gainslift = function(df, binary_target, prediction, higher_morelikely=TRUE, round_value=6){
+ezr.gainslift = function(df, binary_target, prediction, higher_morelikely=TRUE, round_value=6, concise_result=TRUE){
     #if (higher_score_higher_default==FALSE){
     #  df[prediction] = df[prediction] * -1 # resorting if higher is lower chance of default
     #}
@@ -75,6 +76,9 @@ ezr.gainslift = function(df, binary_target, prediction, higher_morelikely=TRUE, 
         .funs = funs(round(., round_value))
     )
 
+    if(concise_result==TRUE){
+        gains_lift_table = gains_lift_table %>% filter(cumulative_data_fraction %in% c(0.01, 0.02, 0.03, 0.04, 0.05, 0.075, 0.1, 0.15, 0.2, 0.25, 0.3, 0.4, 0.5, 0.75, 0.9, 1.0))
+    }
 
 
 
