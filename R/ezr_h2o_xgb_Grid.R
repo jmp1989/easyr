@@ -118,7 +118,7 @@ ezr.h2o_grid_xgb = function (train_df, valid_df = NULL, xvars = names(train_df),
       }
       if (xval == TRUE) {
         grid = h2o.grid(algorithm = "xgboost", training_frame = train_df,
-                        validation_frame = valid_df, x = xvars, y = yvar,
+                        validation_frame = valid_df, x = xvars, y = yvar
                         ,seed=seed
                         ,score_tree_interval = 5, keep_cross_validation_predictions = keep_cross_validation_predictions,
                         nfolds = folds, fold_assignment = "Modulo", search_criteria = search_criteria,
