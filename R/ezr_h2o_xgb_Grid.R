@@ -70,7 +70,7 @@ ezr.h2o_grid_xgb = function (train_df, valid_df = NULL, xvars = names(train_df),
     gbm_screen = h2o.xgboost(x = xvars, y = yvar, training_frame = train_df,
                              categorical_encoding = "Enum", model_id = "xgb_screen",
                              ntrees = 125, sample_rate = 0.8, colsample_bytree = 0.8,
-                             learn_rate = 0.1, seed=myseed)
+                             learn_rate = 0.1, seed=seed)
     xgb_importance = as.data.frame(h2o.varimp(gbm_screen))
     xgb_importance = xgb_importance %>% separate(col = variable,
                                                  into = c("variable", "level"), sep = "\\.") %>% group_by(variable) %>%
