@@ -32,7 +32,7 @@ ezr.plot_ordered_bar=function(dataset, column, vertical=TRUE,max_number=10){
     plt = frequency %>% ggplot(aes(y=n, x=reorder(!!rlang::sym(column),n) ,fill=!!rlang::sym(column)) )  +geom_bar(stat = 'identity')+geom_text(aes(y=n,    # nudge above top of bar
                           label = paste0(pct, '%')),        position = position_dodge(width = 1),
                    size = 3, hjust = hjust , vjust = vjust) +
-        theme_classic()+
+        theme_Publication()+ scale_colour_Publication()+
         theme(axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_text(angle = 90, hjust = 1), legend.position="bottom")+labs(title=column)
 
     if(vertical==FALSE){

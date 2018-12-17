@@ -23,8 +23,8 @@ ezr.plot_cum_density=function(dataset, numeric_field, grouping_field=NULL, title
         result_plot =  ggplot(dataset, aes( x=!!rlang::sym(numeric_field), color=!!rlang::sym(grouping_field)))
                               }
 
-    result_plot = result_plot+ stat_ecdf()+
-            theme_bw()+
+    result_plot = result_plot+ stat_ecdf(size=1.5)+
+        theme_Publication()  + scale_colour_Publication()+
             labs(title=title, y='Cumulative Perc.') + scale_x_continuous(breaks = scales::pretty_breaks())
 
 
