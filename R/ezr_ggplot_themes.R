@@ -12,7 +12,7 @@ theme_Publication <- function(base_size=14, base_family="") {
             axis.title.y = element_text(angle=90,vjust =2),
             axis.title.x = element_text(vjust = -0.2),
             axis.text.x = element_text(angle=90),
-            axis.text = element_text(), 
+            axis.text = element_text(),
             axis.line = element_line(colour="black"),
             axis.ticks = element_line(),
             panel.grid.major = element_blank(),
@@ -33,11 +33,11 @@ theme_Publication <- function(base_size=14, base_family="") {
 
 scale_fill_Publication <- function(...){
   library(scales)
-  discrete_scale("fill","Publication",manual_pal(values = c("#386cb0","#fdb462","#7fc97f","#ef3b2c","#662506","#a6cee3","#fb9a99","#984ea3","#ffff33")), ...)
-  
+  discrete_scale("fill","Publication",manual_pal(values = c("#fdb462","#386cb0","#7fc97f","#ef3b2c","#662506","#a6cee3","#fb9a99","#984ea3","#ffff33")), ...)
+
 }
 
 scale_colour_Publication <- function(...){
   library(scales)
-  discrete_scale("colour","Publication",manual_pal(values = c("#386cb0","#fdb462","#7fc97f","#ef3b2c","#662506","#a6cee3","#fb9a99","#984ea3","#ffff33")), ...)
+  discrete_scale("colour","Publication",manual_pal(values = c("#fdb462","#386cb0","#7fc97f","#ef3b2c","#662506","#a6cee3","#fb9a99","#984ea3","#ffff33")), ...)
 }
