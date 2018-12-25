@@ -40,9 +40,9 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
 
 
 
-    density_plot = dataset %>% ggplot(aes(x=!!rlang::sym(predictor), color=!!rlang::sym(binary_target)))+ggplot2::geom_density(size=1.5)+ theme_Publication() + scale_colour_Publication()+labs(title=paste0('Density Plot: ', predictor,' vs. ', binary_target))
+    density_plot = dataset %>% ggplot(aes(x=!!rlang::sym(predictor), color=!!rlang::sym(binary_target)))+ggplot2::geom_density(size=1.5)+ theme_Publication() + scale_colour_Publication()+labs(title=paste0('Density Plot: ', predictor,' vs. ', binary_target))+scale_y_continuous(breaks = scales::pretty_breaks())
 
-    cum_density_plot  = ezr.plot_cum_density(dataset, numeric_field = predictor, grouping_field = binary_target)+labs(title=paste0('Cumulative Density Plot: ', predictor,' vs. ', binary_target))
+    cum_density_plot  = ezr.plot_cum_density(dataset, numeric_field = predictor, grouping_field = binary_target)+labs(title=paste0('Cumulative Density Plot: ', predictor,' vs. ', binary_target))+scale_y_continuous(breaks = scales::pretty_breaks())
 
     # other plots....
 
@@ -62,7 +62,7 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
         count = sum(!!rlang::sym(binary_target)=='1', na.rm = TRUE),
         count_0 = total_obs - count
     ) %>% ungroup() %>% mutate(
-        pct = count / total_obs
+        pct = round(100 * (count / total_obs),2)
     )
 
 
@@ -70,22 +70,32 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
     vjust = -0.5
 
 
-
     pct_plot = metrics_for_plotting %>% ggplot(aes(x=!!rlang::sym(predictor), y = pct))+
-        geom_bar(stat='identity', fill='#fdb462')+theme_Publication()+labs(title=paste0('Percent Target By Bin: ', predictor,' vs. ', binary_target)) #+
+        geom_bar(stat='identity')+theme_Publication()+labs(title=paste0('Percent Target By Bin: ', predictor,' vs. ', binary_target), y ='%')+scale_y_continuous(breaks = scales::pretty_breaks())
 
-    #      geom_text(aes(y=))
-    #
-    #
-    # geom_text(aes(y = n, label = paste0(pct, "%")), position = position_dodge(width = 1),
-    #           size = 3, hjust = hjust, vjust = vjust)
-    #
+    if (add_text==TRUE){
+        pct_plot =pct_plot + geom_text(aes(y=pct, label=paste0(pct, "%")), position = position_dodge(width= 1), size=2.5, hjust=hjust, vjust=vjust)
+    }
+
+    #### count plot
+    # looks messy, but just getting data for easier creation of bar-plot w/ labels.
+    metrics_for_plotting2 = bind_rows(metrics_for_plotting %>% mutate(!!binary_target :=1),
+                                      metrics_for_plotting %>% mutate(!!binary_target :=0, count = total_obs-count)) %>% mutate(!!binary_target := factor(!!rlang::sym(binary_target)))
 
 
-    count_plot = dataset %>% ggplot(aes(!!rlang::sym(predictor), fill=!!rlang::sym(binary_target)))+geom_bar(stat='count', position = 'dodge')+theme_Publication()+scale_fill_Publication() + labs(title=paste0('Count Target By Bin: ', predictor,' vs. ', binary_target))
+    count_plot = metrics_for_plotting2 %>% ggplot(aes(x=!!rlang::sym(predictor), y=count, fill=!!rlang::sym(binary_target))) + geom_bar(stat='identity', position = 'dodge')+
+        theme_Publication()+scale_fill_Publication() +
+    scale_y_continuous(breaks = scales::pretty_breaks()) +
+    labs(title=paste0('Count Target By Bin: ', predictor,' vs. ', binary_target))
+
+
+    if (add_text==TRUE){
+       count_plot =  count_plot + geom_text(aes(y=count, label=paste0(count)), position = position_dodge(width=.5), size=2.5, hjust=hjust, vjust=vjust)
+    }
+
 
     if(return_as_1plot==TRUE){
-        result = gridExtra::arrangeGrob(pct_plot+labs(title=NULL), count_plot+labs(title=NULL), cum_density_plot+labs(title=NULL), density_plot+labs(title=NULL))
+        result = ggpubr::ggarrange(pct_plot+labs(title=NULL), count_plot+labs(title=NULL), cum_density_plot+labs(title=NULL), density_plot+labs(title=NULL), common.legend = TRUE, legend='top')
 
     } else {
         result = list(pct_plot = pct_plot,
@@ -96,7 +106,6 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
 
     return(result)
 }
-
 
 
 
