@@ -28,9 +28,6 @@
 #' @examples
 ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equal', n_breaks=10, fixed_breaks=NULL, return_as_1plot=TRUE, add_text = FALSE){
 
-
-
-
     n_distinct_in_target = dplyr::n_distinct(dataset[[binary_target]] )
     if(n_distinct_in_target >2){
         stop('ERROR!: The binary column should only have two values in it.  Check for NULLs if you think there is just two values. ')
@@ -121,13 +118,3 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
 
 
 
-
-
-
-
-
-
-
-
-    return(result)
-}
