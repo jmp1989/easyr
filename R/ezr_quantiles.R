@@ -1,7 +1,7 @@
 
 #' Quantiles
 #'
-#' Get the quantiles of each numerical column.
+#' Get the quantiles of each numerical column.  Default is to get every 5%tile.
 #'
 #' @param dataset  dataframe
 #' @param exclude_columns  dont use these columns.  should be a vector or in 'quotes'
@@ -11,9 +11,7 @@
 #' @return A dataframe of quantiles for each numerical column
 #' @export
 #'
-#' @examples
-#' ezr.quantiles(mtcars, number_of_quantiles = 10);
-#' ezr.quantiles(diamonds);
+#' @examples' ezr.quantiles(mtcars, number_of_quantiles = 10); #' ezr.quantiles(diamonds);
 
 ezr.quantiles = function(dataset, exclude_columns=NULL, only_columns=NULL, number_quantiles=20){
 
