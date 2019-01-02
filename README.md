@@ -1,5 +1,8 @@
 # easyr
 
+This package attempts to contain many of the commonly used functions and processes that you may come across when performing a variety of data analysis and machine learning tasks.
+
+
 To install:
 ` devtools::install_github('jmp1989/easyr')`
 
