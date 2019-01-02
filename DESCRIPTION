@@ -6,7 +6,7 @@ Author: Joe Pereira joepereira89@gmail.com
 Maintainer: The package maintainer <joepereira89@gmail.com>
 Description: This package is intended to capture tasks related to EDA, Data Manipulation, Plots, and Modeling. Often, the same tasks are performed across projects.  Easyr is intended to help reduce the amount of time typing this functions and processes, so more time can be spent on the higher value work.  Future iterations of this package will improve the functions and documentation, all while adding new ones.
 Depends: R (>= 3.1.0)
-Imports: tidyverse (>= 1.2.1),ggpubr (>= 0.1.8), classInt (>= 0.2-3)
+Imports: tidyverse (>= 1.2.1),ggpubr (>= 0.1.8), classInt (>= 0.2-3), h2o (>= 3.22.1.1), gridExtra (>= 2.3)
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true

@@ -8,6 +8,7 @@ To install:
 
 In Progress:
 - Adding remaining utility/misc functions.
+- Datasets containing dates and missing values for examples / testing out approaches...
 - Better documentation & examples
 - Additional modeling techniques - primarily timeseries, optimization, and clustering.
 - Metric calculations / model evaluation
