@@ -12,9 +12,9 @@
 #'
 #' @examples  ezr.crosstab(mtcars, mtcars %>% select(cyl), mtcars %>% select(vs))
 #' ezr.crosstab(mtcars, 'cyl', 'vs')
-ezr.crosstab = function(dataset, row_field, column_field, percent_denominator='row', rounding_digits=0, position = 'front'){
+ezr.crosstab = function(dataset, row_field, column_field, percent_denominator='all', rounding_digits=0, position = 'front', add_totals=TRUE){
 
-
+library(janitor)
     # converts df %>% select(...)
     if (is.data.frame(row_field)==TRUE){
         row_field = names(row_field)
@@ -24,6 +24,14 @@ ezr.crosstab = function(dataset, row_field, column_field, percent_denominator='r
         column_field = names(column_field)
     }
 
-    result = dataset %>% tabyl(!!rlang::sym(row_field), !!rlang::sym(column_field),show_missing_levels=TRUE) %>% janitor::adorn_percentages(denominator = percent_denominator, na.rm = FALSE) %>%   adorn_pct_formatting(rounding = "half up", digits = rounding_digits) %>% janitor::adorn_ns(position = position)
+    if(add_totals==TRUE){
+    result = dataset %>% janitor::tabyl(!!rlang::sym(row_field), !!rlang::sym(column_field),show_missing_levels=TRUE) %>% janitor::adorn_totals(where=c('row','col'),na.rm=FALSE) %>% janitor::adorn_percentages(denominator = percent_denominator, na.rm = FALSE) %>%   adorn_pct_formatting(rounding = "half up", digits = rounding_digits) %>% janitor::adorn_ns(position = position)} else {
+
+        result = dataset %>% janitor::tabyl(!!rlang::sym(row_field), !!rlang::sym(column_field),show_missing_levels=TRUE) %>% janitor::adorn_percentages(denominator = percent_denominator, na.rm = FALSE) %>%   adorn_pct_formatting(rounding = "half up", digits = rounding_digits) %>% janitor::adorn_ns(position = position)
+    }
+
+    print(paste0('Row counts are: ', toupper(row_field), '...... Columns counts are: ', toupper(column_field)))
+
+
     return(result)
 }
