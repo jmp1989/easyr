@@ -3,7 +3,7 @@ theme_Publication <- function(base_size=14, base_family="") {
   library(ggthemes)
   (theme_foundation(base_size=base_size, base_family=base_family)
     + theme(plot.title = element_text(face = "bold",
-                                      size = rel(1.25), hjust = 0.5),
+                                      size = rel(1.25)),
             text = element_text(),
             panel.background = element_rect(colour = NA),
             plot.background = element_rect(colour = NA),
@@ -18,10 +18,10 @@ theme_Publication <- function(base_size=14, base_family="") {
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
             legend.key = element_rect(colour = NA),
-            legend.position = "bottom",
-            legend.direction = "horizontal",
-            legend.key.size= unit(0.2, "cm"),
-            legend.margin = unit(0, "cm"),
+            legend.position = "right",
+            legend.direction = "vertical",
+            legend.key.size= 10, #unit(0.2, "cm"),
+            #legend.margin = unit(0, "cm"),
             legend.title = element_text(face="italic"),
             plot.margin=unit(c(10,5,5,5),"mm"),
             strip.background=element_rect(colour="#f0f0f0",fill="#f0f0f0"),
