@@ -20,7 +20,7 @@ theme_Publication <- function(base_size=14, base_family="") {
             legend.key = element_rect(colour = NA),
             legend.position = "right",
             legend.direction = "vertical",
-            legend.key.size= 10, #unit(0.2, "cm"),
+            legend.key.size=  unit(0.2, "cm"),
             #legend.margin = unit(0, "cm"),
             legend.title = element_text(face="italic"),
             plot.margin=unit(c(10,5,5,5),"mm"),
