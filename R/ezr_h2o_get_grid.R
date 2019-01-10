@@ -70,7 +70,7 @@ ezr.h2o_get_grid = function(grid, decreasing=TRUE, sort_by='auc', classification
       gini_coef = 2*parse_number(auc) - 1
     ) 
     
-    vars_to_round = c('auc','f1','mcc','logloss','recall','precision','lift_top_group','accuracy','gini_coef')
+    vars_to_round = c('auc','f1','mcc','logloss','recall','precision','lift_top_group','accuracy')
     result_grid = result_grid %>% mutate_at(.vars = vars(vars_to_round), .funs = funs(round(parse_number(.),rounding_digits)))
     
     
