@@ -1,6 +1,6 @@
 # easyr
 
-This package attempts to contain many of the commonly used functions and processes that you may come across when performing a variety of data analysis and machine learning tasks.
+This package attempts to contain many of the commonly used functions and processes that you may come across when performing a variety of data analysis and machine learning tasks.  This package helps save time and provides you the tools to build effective models.
 
 
 To install:
@@ -8,9 +8,7 @@ To install:
 
 In Progress:
 - Adding remaining utility/misc functions.
-- Datasets containing dates and missing values for examples / testing out approaches...
-- Better documentation & examples
-- Additional modeling techniques - primarily timeseries, optimization, and clustering.
-- Metric calculations / model evaluation
+- Adding examples & cleaning up documentation.
+- Additional modeling techniques - primarily timeseries and clustering.
+- Regression analysis functions
 - Occassional bug-fixes
-- Functions by Topic lookup (eda, modeling, plots, etc)
