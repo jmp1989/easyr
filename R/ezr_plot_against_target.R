@@ -22,11 +22,12 @@
 #' @param fixed_breaks If style=FIXED then you want a vector of values such as seq(0,1000,100)
 #' @param return_as_1plot Default is TRUE. If TRUE, this returns a singple plot.  Otherwise returns list of plots
 #' @param add_text  Future work...add text to bar plots.
+#' @param default_bar_color TRUE or FALSE.  Default is FALSE.  This means plot comes out as black.  If True then color is orange.
 #' @return Returns
 #' @export
 #'
 #' @examples
-ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equal', n_breaks=10, fixed_breaks=NULL, return_as_1plot=TRUE, add_text = FALSE){
+ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equal', n_breaks=10, fixed_breaks=NULL, return_as_1plot=TRUE, add_text = FALSE, default_bar_color=FALSE){
 
     n_distinct_in_target = dplyr::n_distinct(dataset[[binary_target]] )
     if(n_distinct_in_target >2){
@@ -46,7 +47,7 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
 
     dataset = dataset %>% dplyr::select(predictor, binary_target)
 
-    dataset =  easyr::ezr.add_buckets(dataset = dataset, column = predictor, style = style, n_breaks = n_breaks,
+    dataset =  easyr::ezr.add_bins(dataset = dataset, column = predictor, style = style, n_breaks = n_breaks,
                                       fixed_breaks = fixed_breaks) #+
 
     # just renaming...
@@ -63,12 +64,18 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
     )
 
 
-    hjust = 0
+    hjust = 0.5
     vjust = -0.5
+
+    if(default_bar_color==FALSE){
+        fill_color='black'
+    } else {
+        fill_color = '#ff7f0e'
+    }
 
 
     pct_plot = metrics_for_plotting %>% ggplot(aes(x=!!rlang::sym(predictor), y = pct))+
-        geom_bar(stat='identity')+theme_Publication()+labs(title=paste0('Percent Target By Bin: ', predictor,' vs. ', binary_target), y ='%')+scale_y_continuous(breaks = scales::pretty_breaks())
+        geom_bar(stat='identity',fill=fill_color)+theme_Publication()+labs(title=paste0('Percent Target By Bin: ', predictor,' vs. ', binary_target), y ='Target %')+scale_y_continuous(breaks = scales::pretty_breaks())
 
     if (add_text==TRUE){
         pct_plot =pct_plot + geom_text(aes(y=pct, label=paste0(pct, "%")), position = position_dodge(width= 1), size=2.5, hjust=hjust, vjust=vjust)
