@@ -33,7 +33,7 @@ ezr.plot_ordered_bar=function(dataset, column, vertical=TRUE,max_number=10){
                           label = paste0(pct, '%')),        position = position_dodge(width = 1),
                    size = 3, hjust = hjust , vjust = vjust) +
         theme_Publication()+ scale_colour_Publication()+
-        theme(axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_text(angle = 90, hjust = 1), legend.position="bottom")+labs(title=column)
+        theme(axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_text(angle = 90, hjust = 1), legend.position="bottom")+labs(title=column) + theme_Publication()
 
     if(vertical==FALSE){
         plt = plt+coord_flip()

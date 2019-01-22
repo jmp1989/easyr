@@ -18,16 +18,17 @@
 
 ezr.plot_facet_numericals=function(dataset, variables_to_plot=names(dataset), type='box', grouping_value, sample_frac = 1){
 
-    print('Sampling the data to improve plotting performance...')
+    if(sample_frac < 1){
+        print('Sampling the data to improve plotting performance...')
     dataset = sample_frac(dataset, size = sample_frac, replace = FALSE)
-
+}
     eligible_variables=dataset %>% select_if(is.numeric) %>% names()
     plotting_variables = dplyr::intersect(eligible_variables, variables_to_plot)
     plotting_variables = setdiff(plotting_variables, grouping_value)
     dataset = dataset %>% mutate(
         !!grouping_value := as.factor(!!rlang::sym(grouping_value))
     )
-    glimpse(dataset)
+    #glimpse(dataset)
     plot_list = list()
     for (each_variable in plotting_variables ){
 
@@ -37,7 +38,7 @@ ezr.plot_facet_numericals=function(dataset, variables_to_plot=names(dataset), ty
         if(tolower(type) %in% c('density')){
             plt = dataset %>% ggplot(aes( !!rlang::sym(each_variable), color=!!rlang::sym(grouping_value)) )+  geom_density()
         }
-        plt = plt + ggtitle(each_variable)+theme_bw() + theme(axis.title.y=element_blank(), axis.title.x=element_blank(), axis.text.x = element_text(angle = 90, hjust = 1))
+        plt = plt + ggtitle(each_variable)+theme_Publication() +scale_colour_Publication()+ theme(axis.title.y=element_blank(), axis.title.x=element_blank(), axis.text.x = element_text(angle = 90, hjust = 1))
         plot_list[[each_variable]] = plt
 
 
