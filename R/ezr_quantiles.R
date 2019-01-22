@@ -11,7 +11,7 @@
 #' @return A dataframe of quantiles for each numerical column
 #' @export
 #'
-#' @examples' ezr.quantiles(mtcars, number_of_quantiles = 10); #' ezr.quantiles(diamonds);
+#' @examples ezr.quantiles(mtcars, number_of_quantiles = 10); #' ezr.quantiles(diamonds);
 
 ezr.quantiles = function(dataset, exclude_columns=NULL, only_columns=NULL, number_quantiles=20){
 
