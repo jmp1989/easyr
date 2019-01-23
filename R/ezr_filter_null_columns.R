@@ -12,8 +12,9 @@
 #' @examples
 ezr.filter_null_columns = function(dataset, threshold_to_eliminate=0.90, keep_columns = NULL, return_only_corrected_df=FALSE){
 
+    if(return_only_corrected_df==FALSE){
     print('Returns a list of 3 dataframes:  corrected df, na_frequency_table ')
-
+}
     # table of frequency
     na_freq = data.frame(na_pct = colSums(is.na(dataset)) / nrow(dataset))
     na_freq_count = data.frame(na_count= colSums(is.na(dataset)))
@@ -50,4 +51,6 @@ ezr.filter_null_columns = function(dataset, threshold_to_eliminate=0.90, keep_co
 
     return(result = list(corrected_df = df_result, na_frequency_table = na_freq, na_column_names_to_remove = features_to_remove  ))
 }
+
+
 

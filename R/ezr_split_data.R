@@ -1,55 +1,120 @@
-#' Title Split Data by Percentage
+
+
+
+
+#' Split Data
 #'
-#' @param dataset dataframe that you wish to divide
-#' @param train_pct a number between 0 and 1.  This will be the percent of records from the dataset in the 'train' dataframe.
-#' @param return_as_single_df  Default is FALSE.  Return the dataset as a single dataframe with a column 'dataset_flag_name' indicating which record each belongs too
-#' @param seed Default is 2018.  Ensures consistent splits
-#' @param dataset_flag_name What do you want to call the dataset splits?  Default is train and test.
+#' Seperate data into train and test datasets.  Data can be returned in a single dataset or in multiple
 #'
-#' @return Returns a dataframe with a new column indicating the records assignment or a list of dataframes if the return_as-single_df is false
+#' @param dataset dataset.  H2o or regular.
+#' @param prop   A vector of values.  Only a single valid is needed for standard train/test split.  If a 2nd value is entered then a valid dataset will be created.
+#' @param strata Default is NULL.  This is for startified sampling.  Not valid for h2o dataframes.
+#' @param return_as_single_df Return as a single dataframe.
+#' @param seed
+#' @param datasplit_identifiers.  Assumed to be in this order:  train/test/valid.  You may call things otherwise, but the returned dataset may be named differently.
+#'
+#' @return
+#' @export
 #'
 #' @examples
-#'
-#' ezr.split_data(iris, train_pct = .45)
-#' ezr.split_data(iris, train_pct = .45, return_as_single_df = TRUE)
-ezr.split_data = function(dataset, train_pct,  return_as_single_df = FALSE,seed=2018, dataset_flag_name =c('train','test')){
-    set.seed(seed)
+ezr.split_data = function(dataset, perc=c(0.75), strata=NULL,  return_as_single_df=FALSE, seed=2019, datasplit_identifiers=c('train','test','valid')){
 
-    test_pct = 1-train_pct
+    # reduce this if needed automatically...
+    datasplit_identifiers=datasplit_identifiers[1:(length(perc)+1)]
 
+    if (class(dataset)[1]=='H2OFrame'){
 
-    rows_count = nrow(dataset)
-
-    train_size = floor(train_pct * rows_count)
-    test_size = floor(test_pct * rows_count)
+        if(is.null(strata)==FALSE){
+            print('Stratfied Sampling not implemented for H2o frames')
+        }
 
 
-    if ( train_size + test_size  != rows_count){
-        difference_row_count = rows_count - (train_size + test_size )
-        train_size = train_size + difference_row_count
+       h2o_splits= h2o.splitFrame(dataset, ratios = perc, destination_frames = datasplit_identifiers, seed=seed)
+       train= h2o_splits[[1]]
+       test= h2o_splits[[2]]
+       if(length(perc)==2){
+       valid = h2o_splits[[3]]
+       }
+
+       if(return_as_single_df==TRUE){
+           print(paste0('Returning as a single dataframe with a column identifier named <DATA_SPLIT>', datasplit_identifiers))
+
+           train['data_split'] = datasplit_identifiers[1]
+           test['data_split'] = datasplit_identifiers[2]
+
+           if(length(perc)>=2){
+           valid['data_split'] = datasplit_identifiers[3]
+
+           result = h2o.rbind(train,test,valid)
+           } else {
+            result = h2o.rbind(train,test)
+           }
+
+       }
+    } else {
+
+        # handle multiple datasets...
+        if(length(perc)>=2){
+
+
+            perc1=perc[1]   # train dataset %
+            perc2 = perc[2] # test dataset %
+
+            perc3 = 1-perc1-perc2
+
+            testing_perc = perc2 / (perc2+perc3)
+
+
+
+            initial_splits = rsample::initial_split(data=dataset, prop=perc1, strata = strata )
+            training  = training(initial_splits)
+            intermediate_split  = testing(initial_splits)
+            intermediate_split = rsample::initial_split(data=intermediate_split, prop=testing_perc, strata = strata )
+
+            testing=training(intermediate_split)
+            valid=testing(intermediate_split)
+
+            if(return_as_single_df==TRUE){
+
+                training['data_split']=datasplit_identifiers[1]
+                testing['data_split']=datasplit_identifiers[2]
+                valid['data_split']=datasplit_identifiers[3]
+
+                result = bind_rows(training,testing,valid)
+
+            } else {
+                result = list(training = training, testing = testing, valid = valid)
+
+            }
+
+        } else {
+            perc1 = perc[1]
+            perc2 = 1-perc1
+
+            initial_splits = rsample::initial_split(data=dataset, prop=perc1, strata = strata )
+
+            training  = training(initial_splits)
+            testing  = testing(initial_splits)
+
+            if(return_as_single_df==TRUE){
+
+                training['data_split']= datasplit_identifiers[1]
+                testing['data_split']=  datasplit_identifiers[2]
+
+
+                    result = list(training = training, testing = testing)
+
+                }else {
+                result = list(training = training, testing=testing)
+            }
+
     }
-
-    print(paste0('Train Set size is this many records: ', train_size))
-    print(paste0('Test Set size is this many records: ', test_size))
-
-
-    idx_train = sample(1:rows_count, size = train_size)
-    idx_test =  base::setdiff(seq(1:rows_count), idx_train)
-
-    train_df <- dataset[idx_train,]
-    test_df = dataset[idx_test,]
-
-    train_df$dataset_flag_name = dataset_flag_name[1]
-    test_df$dataset_flag_name = dataset_flag_name[2]
-
-
-    if (return_as_single_df==TRUE){
-        result = dplyr::bind_rows(train_df, test_df)
-    } else{
-        result = list(
-            split_train_df = train_df,
-            split_test_df = test_df
-        )
-    }
-    return(result)
 }
+
+
+    return(result)
+
+}
+
+
+
