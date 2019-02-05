@@ -9,12 +9,14 @@
 #' @param column  field plotting
 #' @param vertical TRUE or FALSE.
 #' @param max_number The maximum number that you want to plot.  Default is 10
+#' @param label Default is 'percent'.  Other valid value is 'count'
+#' @param axis Default is 'count'.  Other valid value is 'percent'.
 #' @return
 #' @export
 #'
 #' @examples ezr.plot_ordered_bar(diamonds, 'color', vertical = FALSE)
 
-ezr.plot_ordered_bar=function(dataset, column, vertical=TRUE,max_number=10){
+ezr.plot_ordered_bar=function(dataset, column, vertical=TRUE,max_number=10, label='percent',axis='count',title=NULL){
 
 
     if(vertical==TRUE){
@@ -25,15 +27,30 @@ ezr.plot_ordered_bar=function(dataset, column, vertical=TRUE,max_number=10){
         vjust = 0
     }
 
-    frequency = dataset %>% group_by(!!rlang::sym(column)) %>% summarise(n = n()) %>% ungroup() %>% mutate(
-        pct = round(100*n / nrow(dataset),2)
-    ) %>% arrange(desc(n)) %>% slice(1:max_number)
+    if (tolower(label)=='count'){
+        label = 'n'
+    } else {
+        label = 'pct_text'
+    }
 
-    plt = frequency %>% ggplot(aes(y=n, x=reorder(!!rlang::sym(column),n) ,fill=!!rlang::sym(column)) )  +geom_bar(stat = 'identity')+geom_text(aes(y=n,    # nudge above top of bar
-                          label = paste0(pct, '%')),        position = position_dodge(width = 1),
+    if (tolower(axis)=='count'){
+        axis = 'n'
+    } else {
+        axis = 'pct'
+    }
+
+    frequency = dataset %>% group_by(!!rlang::sym(column)) %>% summarise(n = n()) %>% ungroup() %>% mutate(
+        pct = round(100*n / nrow(dataset),2),
+        pct_text = paste0(pct,"%")) %>% arrange(desc(n)) %>% slice(1:max_number)
+
+    plt = frequency %>% ggplot(aes(y=!!rlang::sym(axis), x=reorder(!!rlang::sym(column),n) ,fill=!!rlang::sym(column)) )  +
+        geom_bar(stat = 'identity')+
+        geom_text(aes(y=!!rlang::sym(axis),  label = !!rlang::sym(label)),        position = position_dodge(width = 1),
                    size = 3, hjust = hjust , vjust = vjust) +
-        theme_Publication()+ scale_colour_Publication()+
-        theme(axis.title.x = element_blank(), axis.title.y = element_blank(), axis.text.x = element_text(angle = 90, hjust = 1), legend.position="bottom")+labs(title=column) + theme_Publication()
+        theme(axis.title.x = element_blank(), axis.title.y = element_blank(), legend.position="bottom")+
+        labs(title=title, y=axis,x=column) +
+        theme_Publication() +
+        scale_fill_Publication() + scale_y_continuous(breaks=scales::pretty_breaks())
 
     if(vertical==FALSE){
         plt = plt+coord_flip()

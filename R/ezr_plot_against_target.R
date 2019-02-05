@@ -118,7 +118,14 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
 
     # Precision vs AUC Plot
 
-    plt_prauc = data_for_threshold_plt %>% ggplot(aes(x=recall, y=precision))+geom_line(size=1.5, color='#1f77b4')+theme_Publication()+scale_y_continuous(limits = c(0,1), breaks=scales::pretty_breaks(n=6)) + scale_x_continuous(limits = c(0,1), breaks=scales::pretty_breaks(n=6))+scale_colour_Publication() + annotate('text', x = .9, y = .9, label=' ')
+
+    prauc_value = caTools::trapz(data_for_threshold_plt$recall, data_for_threshold_plt$precision)
+
+    plt_prauc = data_for_threshold_plt %>% ggplot(aes(x=recall, y=precision))+geom_line(size=1.5, color='#1f77b4')+
+        theme_Publication()+
+        scale_y_continuous(limits = c(0,1), breaks=scales::pretty_breaks(n=6)) +
+        scale_x_continuous(limits = c(0,1), breaks=scales::pretty_breaks(n=6))+scale_colour_Publication() +
+        annotate('text', x = .9, y = .9, label=paste0('PRAUC:  ', round(prauc_value,3)))
 
 
     # Capture Rate & Response Plot
