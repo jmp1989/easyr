@@ -67,4 +67,3 @@ library(janitor)
 }
 
 
-ezr.crosstab(dataset = dataset, row_field = 'clarity',column_field = 'price', percent_denominator = 'all',)
