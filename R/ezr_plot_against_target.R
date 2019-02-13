@@ -29,12 +29,83 @@
 #' @export
 #'
 #' @examples
-ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equal', n_breaks=10, fixed_breaks=NULL, return_as_1plot=TRUE, add_text = TRUE, default_bar_color=FALSE, include_response_rate=TRUE, higher_morelikely=TRUE){
+ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equal', n_breaks=10, fixed_breaks=NULL, return_as_1plot=TRUE, add_text = TRUE, default_bar_color=FALSE, include_response_rate=TRUE, higher_morelikely=TRUE, round_breaks=0){
 
-    n_distinct_in_target = dplyr::n_distinct(dataset[[binary_target]] )
-    if(n_distinct_in_target >2){
-        stop('ERROR!: The binary column should only have two values in it.  Check for NULLs if you think there is just two values. ')
-    }
+    #categorical vs categorical...
+
+
+
+    # cat vs cat has these plots:
+       # A)   predictor plot
+       # B)   target plot
+       # C)   Pct Plot
+       # D)   Count Plot
+
+#
+#     if(is.character(dataset[[predictor]])==TRUE | is.factor(dataset[[predictor]])==TRUE){
+#         is.character(dataset[[binary_target]])==TRUE | is.factor(dataset[[binary_target]])==TRUE | dplyr::n_distinct(dataset[[binary_target]]==2){
+#
+#
+#             # in event of many categorical values....
+#             dataset = ezr.group_infreq(dataset, column = predictor)
+#
+#
+#             pred_plt = ezr.plot_ordered_bar(dataset, column=predictor,vertical = FALSE, title=predictor)
+#             target_lt = ezr.plot_ordered_bar(dataset, column=binary_target,vertical = FALSE, title=binary_target)
+#
+#
+#
+#             metrics_for_plotting = dataset  %>% group_by(!!rlang::sym(predictor))%>% summarise(
+#                 total_obs = n(),
+#                 count = sum(!!rlang::sym(binary_target)=='1', na.rm = TRUE),
+#                 count_0 = total_obs - count
+#             ) %>% ungroup() %>% mutate(
+#                 pct = round(100 * (count / total_obs))
+#             )
+#
+#
+#             pct_plot = metrics_for_plotting %>% ggplot(aes(x=!!rlang::sym(predictor), y = pct))+
+#                 geom_bar(stat='identity',fill=fill_color)+theme_Publication()+labs(title=paste0('Percent Target By Bin: ', predictor,' vs. ', binary_target), y ='Target %')
+#
+#             if (add_text==TRUE){
+#                 pct_plot =pct_plot + geom_text(aes(y=pct, label=paste0(pct, "%")), position = position_dodge(width= 1), size=2.5, hjust=hjust, vjust=vjust)+scale_y_continuous(breaks = pretty_breaks(n=5), limits = c(0, max(metrics_for_plotting$pct * 1.07)))
+#             }
+#
+#
+#
+#
+#             metrics_for_plotting2 = bind_rows(metrics_for_plotting %>% mutate(!!binary_target :=1),
+#                                               metrics_for_plotting %>% mutate(!!binary_target :=0, count = total_obs-count)) %>% mutate(!!binary_target := factor(!!rlang::sym(binary_target)))
+#
+#
+#             count_plot = metrics_for_plotting2 %>% ggplot(aes(x=!!rlang::sym(predictor), y=count, fill=!!rlang::sym(binary_target))) + geom_bar(stat='identity', position = 'dodge')+
+#                 theme_Publication()+scale_fill_Publication() +
+#                 scale_y_continuous(breaks = scales::pretty_breaks(n=10)) +
+#                 labs(title=paste0('Count Target By Bin: ', predictor,' vs. ', binary_target))
+#
+#
+#             if (add_text==TRUE){
+#                 count_plot =  count_plot + geom_text(aes(y=count, label=paste0(count)), position = position_dodge(width=.5), size=2.5, hjust=hjust, vjust=vjust)
+#             }
+#
+#
+#
+#         }
+#
+#
+#     }
+
+
+
+
+
+
+
+    #
+    # n_distinct_in_target = dplyr::n_distinct(dataset[[binary_target]] )
+    # if(n_distinct_in_target >2){
+    #     stop('ERROR!: The binary column should only have two values in it.  Check for NULLs if you think there is just two values. ')
+    # }
 
     # call ezr.add_buckets for binning....
 
@@ -53,7 +124,7 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
     dataset = dataset %>% dplyr::select(predictor, binary_target)
 
     dataset =  easyr::ezr.add_bins(dataset = dataset, column = predictor, style = style, n_breaks = n_breaks,
-                                      fixed_breaks = fixed_breaks) #+
+                                      fixed_breaks = fixed_breaks, round_breaks=round_breaks ) #+
 
     # just renaming...
     dataset2= dataset %>% dplyr::select(2:3)
@@ -75,7 +146,7 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
     if(default_bar_color==FALSE){
         fill_color='black'
     } else {
-        fill_color = '1f77b4'
+        fill_color = '#1f77b4'
     }
 
 
@@ -118,8 +189,38 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
 
     # Precision vs AUC Plot
 
+    # handle potential issues with NA/INF with precision and recall columns...
 
-    prauc_value = caTools::trapz(data_for_threshold_plt$recall, data_for_threshold_plt$precision)
+    if( is.na(data_for_threshold_plt$precision[nrow(data_for_threshold_plt)])==TRUE ){
+        data_for_threshold_plt$precision[nrow(data_for_threshold_plt)] = data_for_threshold_plt$precision[nrow(data_for_threshold_plt)-1]
+    }
+
+
+    if( is.na(data_for_threshold_plt$recall[nrow(data_for_threshold_plt)])==TRUE ){
+        data_for_threshold_plt$recall[nrow(data_for_threshold_plt)] = data_for_threshold_plt$recall[nrow(data_for_threshold_plt)-1]
+    }
+
+    if( is.na(data_for_threshold_plt$precision[1])==TRUE ){
+        data_for_threshold_plt$precision[1] = data_for_threshold_plt$precision[2]
+    }
+
+
+    if( is.na(data_for_threshold_plt$recall[1])==TRUE ){
+        data_for_threshold_plt$recall[1] = data_for_threshold_plt$recall[2]
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    prauc_value = abs(caTools::trapz( y=data_for_threshold_plt$precision, x=data_for_threshold_plt$recall))
 
     plt_prauc = data_for_threshold_plt %>% ggplot(aes(x=recall, y=precision))+geom_line(size=1.5, color='#1f77b4')+
         theme_Publication()+

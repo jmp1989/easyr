@@ -40,7 +40,8 @@ library(janitor)
 
     if(is.numeric(dataset[[row_field]])==TRUE){
 
-        dataset=ezr.add_bins(dataset = dataset, style = 'equal',n_breaks = numerical_breaks, round_breaks = rounding_breaks,column = row_field)
+        dataset=ezr.add_bins(dataset = dataset, style = 'equal',n_breaks = numerical_breaks, round_breaks = round_breaks,
+                             column = row_field)
 
         row_field=paste0('bucket_',row_field)
 

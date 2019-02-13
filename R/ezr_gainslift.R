@@ -17,7 +17,7 @@ ezr.gainslift = function (df, binary_target, prediction, higher_morelikely = TRU
         retain_vars = c(binary_target, prediction)
         df = as.data.frame(df[retain_vars])
     }
-    df = df %>% select_(.dots = c(binary_target, prediction))
+    df = df %>% dplyr::select(c(binary_target, prediction))
     df = df %>% mutate(`:=`(!!binary_target, readr::parse_number(as.character(!!rlang::sym(binary_target)))))
     if (higher_morelikely == TRUE) {
         df = df %>% arrange(desc(!!rlang::sym(prediction)))
