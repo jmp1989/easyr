@@ -132,7 +132,6 @@ ezr.plot_gainslift_compare=function(dataset, binary_target, fields, higher_morel
 
 
 
-ezr.plot_gainslift_compare(dataset = easyr::dataset_telco_churn_from_kaggle,binary_target = 'Churn',fields = 'TotalCharges')
 
 
 
