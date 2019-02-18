@@ -9,7 +9,7 @@ ezr.rename_by_lookup(df, df_column_lookup)
 \arguments{
 \item{df}{The datafraine}
 
-\item{df_column_lookup}{a dataframe with a new and old column for the spelling of names}
+\item{df_column_lookup}{a dataframe with a new and old column for the spelling of names.  It should have a 'new' and an 'old' column name.}
 }
 \description{
 Rename columns in a dataframe by a lookup table.

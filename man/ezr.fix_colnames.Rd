@@ -4,12 +4,12 @@
 \alias{ezr.fix_colnames}
 \title{Fix column names - replace spaces and periods}
 \usage{
-ezr.fix_colnames(vector, periods2underscore = TRUE,
-  spaces_to_underscore = TRUE, lowercase_all = TRUE,
-  uppercase_all = FALSE)
+ezr.fix_colnames(df_or_vector, return_as_name_vector = TRUE,
+  periods2underscore = TRUE, spaces_to_underscore = TRUE,
+  lowercase_all = TRUE, uppercase_all = FALSE)
 }
 \arguments{
-\item{vector}{vector of things you want to change}
+\item{df_or_vector}{vector of things you want to change.  C}
 
 \item{periods2underscore}{True means replace with underscore.  False means removal.}
 

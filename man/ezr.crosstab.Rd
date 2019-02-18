@@ -6,7 +6,8 @@
 \usage{
 ezr.crosstab(dataset, row_field, column_field,
   percent_denominator = "row", rounding_digits = 0,
-  position = "front")
+  position = "front", add_totals = TRUE, numerical_breaks = 5,
+  round_breaks = 0, style = "equal")
 }
 \arguments{
 \item{dataset}{Dataframe}
@@ -15,11 +16,19 @@ ezr.crosstab(dataset, row_field, column_field,
 
 \item{column_field}{Ideally place the target or outcome interested in comparinghere.}
 
-\item{percent_denominator}{What is the demoninator for percents?  Row is default so place target in column}
+\item{percent_denominator}{Valid values are 'row','all','col'.  What is the demoninator for percents?  Row is default so place target in column.}
 
 \item{rounding_digits}{Default is 0 so whole percents are shown}
 
 \item{position}{Default is front.  Determines what is placed in the ()s}
+
+\item{add_totals}{Add the totals?  Default is true.}
+
+\item{numerical_breaks}{N breaks for numerical values}
+
+\item{round_breaks}{Digits to round numerical values to.}
+
+\item{style}{Valid values are 'equal','pretty','quantile','percentile'.  Default is 'equal'}
 }
 \value{
 Returns the cross tab results...

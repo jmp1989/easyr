@@ -4,18 +4,16 @@
 \alias{ezr.get_env_objects}
 \title{List objects in environment}
 \usage{
-ezr.get_env_objects(pos = 1, pattern = NULL)
-}
-\arguments{
-\item{pos}{ignore, keep at 1}
-
-\item{pattern, }{used to help get objects by pattern.  Can be ignored.}
+ezr.get_env_objects()
 }
 \value{
 Dataframe of metadata about what is in the environment.
 }
 \description{
 Lists functions, dataframes, variables, vectors, etc in the environment along with the size.  Code is largely from https://stackoverflow.com/questions/1358003/tricks-to-manage-the-available-memory-in-an-r-session.
+}
+\details{
+There are no parameters
 }
 \examples{
    mtcars2 = mtcars; x=3; ezr.get_env_objects()

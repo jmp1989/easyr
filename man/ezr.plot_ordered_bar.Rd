@@ -4,7 +4,8 @@
 \alias{ezr.plot_ordered_bar}
 \title{BarChart}
 \usage{
-ezr.plot_ordered_bar(dataset, column, vertical = TRUE, max_number = 10)
+ezr.plot_ordered_bar(dataset, column, vertical = TRUE, max_number = 10,
+  label = "percent", axis = "count", title = NULL)
 }
 \arguments{
 \item{dataset}{dataset}
@@ -14,6 +15,10 @@ ezr.plot_ordered_bar(dataset, column, vertical = TRUE, max_number = 10)
 \item{vertical}{TRUE or FALSE.}
 
 \item{max_number}{The maximum number that you want to plot.  Default is 10}
+
+\item{label}{Default is 'percent'.  Other valid value is 'count'}
+
+\item{axis}{Default is 'count'.  Other valid value is 'percent'.}
 }
 \description{
 Plots Counts and %s of a categorical value

@@ -44,7 +44,7 @@ ezr.fix_colnames = function(df_or_vector, return_as_name_vector=TRUE, periods2un
     }
 
 
-    if (return_as_name_vector==TRUE |){
+    if (return_as_name_vector==TRUE ){
     print('Returning vector of names')
         result=df_or_vector
     }

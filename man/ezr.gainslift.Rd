@@ -5,7 +5,7 @@
 \title{Gains, Lift, and KS Calculator}
 \usage{
 ezr.gainslift(df, binary_target, prediction, higher_morelikely = TRUE,
-  round_value = 6)
+  round_value = 6, concise_result = TRUE)
 }
 \arguments{
 \item{df}{Dataframe of prediction results}
@@ -17,6 +17,8 @@ ezr.gainslift(df, binary_target, prediction, higher_morelikely = TRUE,
 \item{higher_morelikely}{Default is TRUE.  If a higher prediction value is more likely to be a 1.  Set to false if higher is going to be a 0.}
 
 \item{round_value}{Default is 2.  Rounds values to 2 decimal places for a nicer user experience.}
+
+\item{concise_result}{Default is TRUE.  Won't print every record of gainslift table.}
 }
 \value{
 Returns a dataframe with various metrics at each progression into the scorecard.

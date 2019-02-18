@@ -5,7 +5,8 @@
 \title{Title Concatenate Mutliple CSVs or Pipe txts into same dataframe}
 \usage{
 ezr.combine_files(directory = getwd(), pattern = "*.csv",
-  keep_label_file_name_origin = FALSE, type = "csv")
+  keep_label_file_name_origin = FALSE, type = "csv",
+  max_guess = 5000)
 }
 \arguments{
 \item{directory}{Default directory is working directory.   This is where all your files are.}
@@ -15,6 +16,8 @@ ezr.combine_files(directory = getwd(), pattern = "*.csv",
 \item{keep_label_file_name_origin}{Default is FALSE.  This preserves the file name as a column in the file so you can know where it came from}
 
 \item{type}{default is 'csv' (lowercase).  Other valid value is 'txt'.  Will assume txt is a pipe delimited file.}
+
+\item{max_guess}{How many records to guess before reading.  Default is 5000 which is larger than the  default readr::read_xxx values.   Set lower to increae speed.}
 }
 \value{
 Returns a concatenated dataframe of all the files

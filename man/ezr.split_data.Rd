@@ -2,30 +2,23 @@
 % Please edit documentation in R/ezr_split_data.R
 \name{ezr.split_data}
 \alias{ezr.split_data}
-\title{Title Split Data by Percentage}
+\title{Split Data}
 \usage{
-ezr.split_data(dataset, train_pct, return_as_single_df = FALSE,
-  seed = 2018, dataset_flag_name = c("train", "test"))
+ezr.split_data(dataset, perc = c(0.75), strata = NULL,
+  return_as_single_df = FALSE, seed = 2019,
+  datasplit_identifiers = c("train", "test", "valid"))
 }
 \arguments{
-\item{dataset}{dataframe that you wish to divide}
+\item{dataset}{dataset.  H2o or regular.}
 
-\item{train_pct}{a number between 0 and 1.  This will be the percent of records from the dataset in the 'train' dataframe.}
+\item{strata}{Default is NULL.  This is for startified sampling.  Not valid for h2o dataframes.}
 
-\item{return_as_single_df}{Default is FALSE.  Return the dataset as a single dataframe with a column 'dataset_flag_name' indicating which record each belongs too}
+\item{return_as_single_df}{Return as a single dataframe.}
 
-\item{seed}{Default is 2018.  Ensures consistent splits}
+\item{prop}{A vector of values.  Only a single valid is needed for standard train/test split.  If a 2nd value is entered then a valid dataset will be created.}
 
-\item{dataset_flag_name}{What do you want to call the dataset splits?  Default is train and test.}
-}
-\value{
-Returns a dataframe with a new column indicating the records assignment or a list of dataframes if the return_as-single_df is false
+\item{datasplit_identifiers.}{Assumed to be in this order:  train/test/valid.  You may call things otherwise, but the returned dataset may be named differently.}
 }
 \description{
-Title Split Data by Percentage
-}
-\examples{
-
-ezr.split_data(iris, train_pct = .45)
-ezr.split_data(iris, train_pct = .45, return_as_single_df = TRUE)
+Seperate data into train and test datasets.  Data can be returned in a single dataset or in multiple
 }

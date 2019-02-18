@@ -8,8 +8,6 @@ ezr.fix_POSIXCT(dataset, retain_time = FALSE, specific_fields = NULL,
   exclude_field = NULL, timezone = "America/Chicago")
 }
 \arguments{
-\item{dataset}{}
-
 \item{retain_time}{Do you want to keep the HH:MM:SS in the dataset?  Default is no.}
 
 \item{specific_fields}{Only convert this field}
