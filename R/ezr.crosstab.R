@@ -29,7 +29,7 @@ library(janitor)
     #     column_field = names(column_field)
     # }
 
-    if(is.numeric(dataset[[column_field]])==TRUE){
+    if(is.numeric(dataset[[column_field]])==TRUE & dataset[[row_field]] %>% dplyr::n_distinct() > numerical_breaks){
 
         dataset=ezr.add_bins(dataset = dataset, style = 'equal',n_breaks = numerical_breaks, round_breaks = round_breaks,
                              column = column_field)
@@ -38,7 +38,7 @@ library(janitor)
 
     }
 
-    if(is.numeric(dataset[[row_field]])==TRUE){
+    if(is.numeric(dataset[[row_field]])==TRUE & dataset[[row_field]] %>% dplyr::n_distinct() > numerical_breaks){
 
         dataset=ezr.add_bins(dataset = dataset, style = 'equal',n_breaks = numerical_breaks, round_breaks = round_breaks,
                              column = row_field)
