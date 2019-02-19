@@ -19,6 +19,7 @@
 #' @examples
 ezr.split_data = function(dataset, perc=c(0.75), strata=NULL,  return_as_single_df=FALSE, seed=2019, datasplit_identifiers=c('train','test','valid')){
 
+    library(rsample)
     # reduce this if needed automatically...
     datasplit_identifiers=datasplit_identifiers[1:(length(perc)+1)]
 

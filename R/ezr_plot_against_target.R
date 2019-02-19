@@ -114,7 +114,7 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
     }
 
 
-    density_plot = dataset %>% ggplot(aes(x=!!rlang::sym(predictor), color=!!rlang::sym(binary_target)))+ggplot2::geom_density(size=1.5)+ theme_Publication() + scale_colour_Publication()+labs(title=paste0('Density Plot: ', predictor,' vs. ', binary_target))+scale_y_continuous(breaks = scales::pretty_breaks())
+    density_plot = dataset %>% ggplot(aes(x=!!rlang::sym(predictor), color=!!rlang::sym(binary_target)))+ggplot2::geom_density(size=1.25)+ theme_Publication() + scale_colour_Publication()+labs(title=paste0('Density Plot: ', predictor,' vs. ', binary_target))+scale_y_continuous(breaks = scales::pretty_breaks())
 
     cum_density_plot  = ezr.plot_cum_density(dataset, numeric_field = predictor, grouping_field = binary_target)+labs(title=paste0('Cumulative Density Plot: ', predictor,' vs. ', binary_target))+scale_y_continuous(breaks = scales::pretty_breaks())
 
@@ -146,7 +146,7 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
     if(default_bar_color==FALSE){
         fill_color='black'
     } else {
-        fill_color = '#1f77b4'
+        fill_color = '#ff7f0e'
     }
 
 
@@ -179,10 +179,10 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
     data_for_threshold_plt = ezr.get_clf_metric_table(dataset = dataset, binary_response = binary_target, predictor = predictor)
 
     plt_thresholds = data_for_threshold_plt %>% ggplot(aes(x=threshold))+
-        geom_line(aes(y=accuracy, color='accuracy'), size=1.5) +
-        geom_line(aes(y=recall, color='recall'), size=1.5)+
-        geom_line(aes(y=precision, color = 'precision'), size=1.5) +
-        geom_line(aes(y=f1_score, color='f1_Score'),size=1.5)+
+        geom_line(aes(y=accuracy, color='accuracy'), size=1.25) +
+        geom_line(aes(y=recall, color='recall'), size=1.25)+
+        geom_line(aes(y=precision, color = 'precision'), size=1.25) +
+        geom_line(aes(y=f1_score, color='f1_Score'),size=1.25)+
         theme_Publication()+scale_colour_Publication(name='') +
         labs(y='%', title=title) +
         scale_y_continuous(breaks=scales::pretty_breaks(n=6))
@@ -222,7 +222,7 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
 
     prauc_value = abs(caTools::trapz( y=data_for_threshold_plt$precision, x=data_for_threshold_plt$recall))
 
-    plt_prauc = data_for_threshold_plt %>% ggplot(aes(x=recall, y=precision))+geom_line(size=1.5, color='#1f77b4')+
+    plt_prauc = data_for_threshold_plt %>% ggplot(aes(x=recall, y=precision))+geom_line(size=1.25, color='#ff7f0e')+
         theme_Publication()+
         scale_y_continuous(limits = c(0,1), breaks=scales::pretty_breaks(n=6)) +
         scale_x_continuous(limits = c(0,1), breaks=scales::pretty_breaks(n=6))+scale_colour_Publication() +
@@ -237,7 +237,7 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
     baseline_guess_rate = data_for_gainslift %>% slice(100:100)%>% mutate(random_guess=cum_bads / n_records)%>%dplyr::select(random_guess)%>% as.numeric()
 
     if (include_response_rate==TRUE){
-    plt_capt_rate = data_for_gainslift %>% ggplot(aes(x=cumulative_data_fraction, y=cum_capture_rate, color="cum_capture_rate"))+geom_line(size=2)+theme_Publication()+ labs(x='% Tested', y='% Captured & Response Rate', title=title)+geom_line(aes(y=response_rate, color="response_rate")) + geom_smooth(aes(y=response_rate),se=FALSE, color='darkgrey')+
+    plt_capt_rate = data_for_gainslift %>% ggplot(aes(x=cumulative_data_fraction, y=cum_capture_rate, color="cum_capture_rate"))+geom_line(size=1.25)+theme_Publication()+ labs(x='% Tested', y='% Captured & Response Rate', title=title)+geom_line(aes(y=response_rate, color="response_rate")) + geom_smooth(aes(y=response_rate),se=FALSE, color='darkgrey')+
         scale_color_manual(name="",
                            values = c("cum_capture_rate"="#1f77b4", "response_rate"="#ff7f0e")) + geom_abline(intercept=0, slope=1, lty=3)+geom_hline(yintercept = baseline_guess_rate, lty=3) } else {
         plt_capt_rate = data_for_gainslift %>% ggplot(aes(x=cumulative_data_fraction, y=cum_capture_rate, color="cum_capture_rate"))+geom_line(size=2)+theme_Publication()+ labs(x='% Tested', y='% Captured', title=title)+scale_color_manual(name="",  values = c("cum_capture_rate"="#1f77b4")) +  geom_abline(intercept=0, slope=1, lty=3)
@@ -247,7 +247,7 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
 
     data_for_freq_plot = dataset %>% group_by(!!rlang::sym(binary_target)) %>% summarise(n = n(), pct = round(n/(nrow(dataset)),2) )%>% ungroup()
 
-    freq_plt = data_for_freq_plot %>% ggplot(aes(x=!!rlang::sym(binary_target), y = n, fill=!!rlang::sym(binary_target)))+geom_bar(stat='identity')+scale_fill_Publication()+theme_Publication()+scale_y_continuous(breaks=scales:::pretty_breaks())+geom_text(aes(x=!!rlang::sym(binary_target), label = paste0(pct*100,'%, (',n,')'), y=n),vjust = -0.5, fontface=2) +labs(y='N', title=title)
+    freq_plt = data_for_freq_plot %>% ggplot(aes(x=!!rlang::sym(binary_target), y = n, fill=!!rlang::sym(binary_target)))+geom_bar(stat='identity')+scale_fill_Publication()+theme_Publication()+scale_y_continuous(breaks=scales:::pretty_breaks())+geom_text(aes(x=!!rlang::sym(binary_target), label = paste0(pct*100,'% (',n,')'), y=n),vjust = -0.5, fontface=2) +labs(y='N', title=title)
 
 
 
@@ -288,8 +288,6 @@ ezr.plot_against_target = function(dataset, predictor ,binary_target, style='equ
 
     return(result)
 }
-
-
 
 
 
