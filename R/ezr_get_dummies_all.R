@@ -19,7 +19,7 @@ ezr.get_dummies_all = function(dataset, exclude_cols=NULL, convert_to_factor = F
 
     for (each_column in keep_cols){
         print(each_column)
-        dataset =easyr::get_dummies(dataset, dummy_this_col =each_column, return_as_seperate_df = FALSE, convert_to_factor = FALSE )
+        dataset =get_dummies(dataset, dummy_this_col =each_column, return_as_seperate_df = FALSE, convert_to_factor = convert_to_factor )
     }
 
     return(dataset)

@@ -1,96 +1,70 @@
-
-
-#' AUC PLOT
+#' Plot AUC
 #'
-#' Generates an AUC plot.  Can compare two different fields against each other if needed.   Can plot either FPR vs TPR columns or   Truth vs prediction value(s).  Adds the AUC alues to the plots.
+#' Plot AUC.  If you have multiple predictions, add them in a vector.  For example c('pred1','pred2')
 #'
+#' @param dataset  Dataframe
+#' @param truth Target value.  Should be 0 and 1
+#' @param prediction  Predictions.  Can be one value or two.
+#' @param title Plot title
 #'
-#' @param dataset dataset
-#' @param fpr_or_truth fpr value or truth.  Default is expecting a 0/1 truth value.
-#' @param tpr_or_pred  fpr or prediction value.  Default expects a prediction value.
-#' @param pred_2nd_model Default is NULL.  If you wish to compare two plots side-by-side, then you must use truth & prediction values.
-#' @param title plot title
-#' @param add_text  add text to plot?  Default is true.
-#' @param metrics_precalculated FALSE by default.  This means expects a 0/1 truth_or_fpr and a score in the pred_or_tpr.  Set to TRUE if you already know that the FPR and TPR are already calculated for you.
-#'
-#' @return  Returns a plot of the AUC-values
+#' @return Returns a plot of AUC
 #' @export
 #'
 #' @examples
-ezr.plot_auc=function(dataset, fpr_or_truth, tpr_or_pred, pred_2nd_model=NULL, title=NULL, metrics_precalculated=FALSE, add_text=TRUE){
+ezr.auc_plot = function (dataset, truth, prediction, title = NULL) {
 
-# pre-calculated means provided a TPR and FPR value in a dataframe....
-    if(metrics_precalculated==TRUE){
+    if (length(prediction)==1){
+        plt_data = yardstick::roc_curve(dataset, !!rlang::sym(truth),
+                                        !!rlang::sym(prediction)) %>% mutate(FPR = 1 - specificity)
+        AUC = dataset %>% yardstick::roc_auc(!!rlang::sym(truth),
+                                             !!rlang::sym(prediction))
+        names(plt_data) = c("threshold", "specificity", "TPR", "FPR")
 
-        auc_value1 = easyr::ezr.auc(dataset, fpr_or_truth = fpr_or_truth, tpr_or_pred = tpr_or_pred, use_truth_and_preds = FALSE)
+        plt = plt_data %>% ggplot(aes(x = FPR, y = TPR)) + geom_path() +
+            geom_abline(lty = 3) + coord_equal() +
+            annotate("text", x = 0.75, y = 0.25, label = paste("AUC =",
+                                                               round(AUC$.estimate, 3))) + labs(title = title) +
+            theme(axis.text.x = element_text(angle = 90)) + theme_Publication()+scale_colour_Publication()
+    }
 
-        # baseline plot, single
-        plt = dataset %>% ggplot(aes(x=!!rlang::sym(fpr_or_truth), y=!!rlang::sym(tpr_or_pred)))+geom_line(size=1.5)+ ggplot2::geom_abline(intercept = 0, slope =1, lty=3) +theme_Publication()+scale_colour_Publication()+labs(x='FPR',y='TPR', title=title)
-
-        if(add_text==TRUE){
-            plt = plt + annotate('text', x=.85, y = .25, label = paste0('AUC: ', round(auc_value1,3)),fontface=2) + theme(legend.title=element_blank())
+    if(length(prediction)>1){
+        if(length(prediction)>2){
+            stop("Error:  Only a one or two prediction values allowed.   ")
         }
+
+        # separate out the various predictions..
+        prediction_1 = prediction[1]
+        prediction_2 = prediction[2]
+
+        # prediction1 values
+        plt_data1 = yardstick::roc_curve(dataset, !!rlang::sym(truth),
+                                         !!rlang::sym(prediction_1)) %>% mutate(FPR = 1 - specificity)
+
+        AUC1 = dataset %>% yardstick::roc_auc(!!rlang::sym(truth),
+                                              !!rlang::sym(prediction_1))
+        names(plt_data1) = c("threshold", "specificity", "TPR", "FPR")
+
+        #prediction2 values
+
+        plt_data2 = yardstick::roc_curve(dataset, !!rlang::sym(truth),
+                                         !!rlang::sym(prediction_2)) %>% mutate(FPR = 1 - specificity)
+
+        AUC2 = dataset %>% yardstick::roc_auc(!!rlang::sym(truth),
+                                              !!rlang::sym(prediction_2))
+        names(plt_data2) = c("threshold", "specificity", "TPR", "FPR")
+
+        plt = plt_data1 %>% ggplot(aes(x = FPR, y = TPR, color=prediction_1)) + geom_path(size=1.25) +
+            geom_abline(lty = 3) + coord_equal() + geom_path(data=plt_data2, aes(x=FPR, y=TPR, color=prediction_2), size=1.25)+
+            annotate("text", x = 0.75, y = 0.2, label = paste("AUC-",prediction_2, "=",
+                                                              round(as.numeric(AUC2$.estimate), 3)), color='#1f77b4')+
+            annotate("text", x = 0.75, y = 0.25, label = paste("AUC-",prediction_1, "=",
+                                                               round(as.numeric(AUC1$.estimate), 3)), color='#ff7f0e') + labs(title = title) +
+            theme(axis.text.x = element_text(angle = 90)) + theme_Publication()+scale_colour_Publication()
 
     }
 
-    if(metrics_precalculated==FALSE){
-        # generate thresholds and TPR/FPR datapoints
-        roc_curve_info1=pROC::roc(dataset[[fpr_or_truth]], dataset[[tpr_or_pred]])
 
 
-        roc_curve_info1 =  data.frame(
-            threshold = roc_curve_info1$thresholds,
-            TPR = roc_curve_info1$sensitivities,
-            specificities = roc_curve_info1$specificities) %>% mutate(
-                FPR = 1-specificities  )
-
-        auc_value1 = easyr::ezr.auc(roc_curve_info1, fpr_or_truth = 'FPR', tpr_or_pred = 'TPR', use_truth_and_preds = FALSE)
-
-
-
-        # baseline plot, single
-        plt = roc_curve_info1 %>% ggplot(aes(x=FPR, y=TPR, color=tpr_or_pred))+geom_line(size=1.5)+ ggplot2::geom_abline(intercept = 0, slope =1, lty=3) +theme_Publication()+labs(x='FPR',y='TPR', title=title) + theme(legend.title = element_blank())+scale_colour_Publication()
-
-        if(add_text==TRUE){
-        if(is.null(pred_2nd_model)==TRUE){
-           plt = plt + annotate('text', x=.85, y = .25, fontface=2,label = paste0('AUC: ', round(auc_value1,3))) + theme(legend.title=element_blank())+scale_colour_Publication()
-        }
-
-        }
-
-
-
-        if(is.null(pred_2nd_model)==FALSE){
-
-            roc_curve_info2=pROC::roc(dataset[[fpr_or_truth]], dataset[[pred_2nd_model]])
-
-
-
-            roc_curve_info2 =  data.frame(
-                threshold = roc_curve_info2$thresholds,
-                TPR = roc_curve_info2$sensitivities,
-                specificities = roc_curve_info2$specificities) %>% mutate(
-                    FPR = 1-specificities  )
-
-            # calclate AUC value
-            auc_value2 = easyr::ezr.auc(roc_curve_info2, 'FPR','TPR',use_truth_and_preds = FALSE)
-
-
-
-            plt = plt + geom_line(data=roc_curve_info2, aes(x=FPR, y = TPR, color=pred_2nd_model), size = 1.5) + scale_color_manual(values = c("#1f77b4","#ff7f0e"))
-
-            if(add_text==TRUE){
-               plt =  plt + annotate('text', x=.95, y=.25, label=paste0(tpr_or_pred, ': ', round(auc_value1,3)),fontface=2, hjust=1, color = '#1f77b4')+
-                    annotate('text', x=.95, y=.2, label=paste0(pred_2nd_model, ': ', round(auc_value2,3)),fontface=2, hjust=1,color = '#ff7f0e')
-            }
-        }
-
-    }
     return(plt)
 }
-
-
-
-
-
 
