@@ -2,7 +2,7 @@
 
 
 
-theme_Publication = function(hide_legend = FALSE, base_size=14, base_family="", ...){
+theme_Publication = function(legend_position = 'right',legend.direction='vertical', base_size=14, base_family="", ...){
 
     theme_Publication <- function( ...) {
 
@@ -10,12 +10,12 @@ theme_Publication = function(hide_legend = FALSE, base_size=14, base_family="", 
         library(ggthemes)
 
 
-        if(hide_legend==FALSE){
-            legend_position = 'bottom'
-        }
-        if(hide_legend==TRUE){
-            legend_position='none'
-        }
+        # if(hide_legend==FALSE){
+        #     legend_position = 'right'
+        # }
+        # if(hide_legend==TRUE){
+        #     legend_position='none'
+        # }
 
         (theme_foundation(base_size=base_size, base_family=base_family)
             + theme(plot.title = element_text(face = "bold",
@@ -35,7 +35,7 @@ theme_Publication = function(hide_legend = FALSE, base_size=14, base_family="", 
                     panel.grid.minor = element_blank(),
                     legend.key = element_rect(colour = NA),
                     legend.position = legend_position,
-                    legend.direction = "horizontal",
+                    legend.direction = legend.direction,
                     legend.key.size=  unit(0.2, "cm"),
                     #legend.margin = unit(0, "cm"),
                     legend.title=element_blank(),
