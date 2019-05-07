@@ -64,13 +64,12 @@ ezr.plot_gainslift_compare=function (dataset, binary_target, fields, higher_more
   }
 
 
-  # if( return_tbl==TRUE ){
-  #   result = list(plot = result, data = master_data)
-  #   print('Returning a list of "plot" & "data"')
-  # }
+  if( return_tbl==TRUE ){
+    result = list(plot = result, data = master_data)
+    print('Returning a list of "plot" & "data"')
+  }
   return(result)
 }
 
 
 
-ezr.plot_gainslift_compare(all_data, binary_target = 'fraud_flg', fields=c('income_monthly_net','emailage_score','time_since_last_ea_verification_epoch','time_since_first_ea_verification_epoch','idanalytics_idscore','lexis_nexis_riskview_score'), higher_morelikely = c(TRUE,TRUE,FALSE,FALSE,FALSE,TRUE))#+theme_bw()
