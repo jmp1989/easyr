@@ -19,7 +19,7 @@ ezr.h2o_get_top_vars  = function(model, n=20, return_as_vector=TRUE){
       model  =h2o.getModel(model)
     }
 
-    if(as.character(model@algo)=='xgboost'){
+    if(as.character(model@algorithm)=='xgboost'){
         ezr.h2o_xgb_importance_aggregated(model) %>% slice(1:n)
     } else {
         result = as.data.frame(h2o.varimp(model)) %>% slice(1:n)
